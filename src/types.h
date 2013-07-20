@@ -4,6 +4,6 @@
 typedef unsigned int uint32;
 
 
-#define NAME_LEN 32;
+#define NAME_LEN 32
 
 #endif

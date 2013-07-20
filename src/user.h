@@ -6,7 +6,7 @@
 struct user_info
 {
 	char name[NAME_LEN];
-	char ip[];
+	char ip[32];
 	uint32 status;
 };
 
@@ -14,7 +14,7 @@ struct user_list
 {
 	struct user_list* next;
 	struct user_info info;
-}
+};
 
 void user_add();
 void user_remove();
