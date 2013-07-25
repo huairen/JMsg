@@ -1,9 +1,12 @@
 #ifndef TYPES_H_
 #define TYPES_H_
 
+
 typedef unsigned int uint32;
+typedef unsigned short uint16;
 
 
-#define NAME_LEN 32
+#define MSG_VERSION 0x0001
+#define MAX_NAMELEN 80
 
 #endif

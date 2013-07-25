@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		037F0B8C179BA0D90064E8A5 /* network.c in Sources */ = {isa = PBXBuildFile; fileRef = 037F0B8B179BA0D90064E8A5 /* network.c */; };
+		037F0B90179BA2FD0064E8A5 /* config.c in Sources */ = {isa = PBXBuildFile; fileRef = 037F0B8F179BA2FD0064E8A5 /* config.c */; };
 		039480F9179A969700AF353E /* messages.c in Sources */ = {isa = PBXBuildFile; fileRef = 039480F4179A969700AF353E /* messages.c */; };
 		039480FA179A969700AF353E /* messages.h in Headers */ = {isa = PBXBuildFile; fileRef = 039480F5179A969700AF353E /* messages.h */; };
 		039480FB179A969700AF353E /* types.h in Headers */ = {isa = PBXBuildFile; fileRef = 039480F6179A969700AF353E /* types.h */; };
@@ -15,6 +17,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		037F0B8B179BA0D90064E8A5 /* network.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = network.c; sourceTree = "<group>"; };
+		037F0B8D179BA0EB0064E8A5 /* network.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = network.h; sourceTree = "<group>"; };
+		037F0B8E179BA2EF0064E8A5 /* config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		037F0B8F179BA2FD0064E8A5 /* config.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = config.c; sourceTree = "<group>"; };
 		039480E6179A966E00AF353E /* libJMsg.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libJMsg.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		039480F4179A969700AF353E /* messages.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = messages.c; sourceTree = "<group>"; };
 		039480F5179A969700AF353E /* messages.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = messages.h; sourceTree = "<group>"; };
@@ -58,6 +64,10 @@
 				039480F6179A969700AF353E /* types.h */,
 				039480F7179A969700AF353E /* user.c */,
 				039480F8179A969700AF353E /* user.h */,
+				037F0B8B179BA0D90064E8A5 /* network.c */,
+				037F0B8D179BA0EB0064E8A5 /* network.h */,
+				037F0B8E179BA2EF0064E8A5 /* config.h */,
+				037F0B8F179BA2FD0064E8A5 /* config.c */,
 			);
 			name = src;
 			path = ../../src;
@@ -129,6 +139,8 @@
 			files = (
 				039480F9179A969700AF353E /* messages.c in Sources */,
 				039480FC179A969700AF353E /* user.c in Sources */,
+				037F0B8C179BA0D90064E8A5 /* network.c in Sources */,
+				037F0B90179BA2FD0064E8A5 /* config.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,7 +209,9 @@
 		039480EB179A966E00AF353E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu89;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -205,7 +219,9 @@
 		039480EC179A966E00AF353E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CONFIGURATION_BUILD_DIR = "$(BUILD_DIR)/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)";
 				EXECUTABLE_PREFIX = lib;
+				GCC_C_LANGUAGE_STANDARD = gnu89;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;

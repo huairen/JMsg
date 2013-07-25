@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0329AD6F179A944C002F4FD1 /* main.c in Sources */ = {isa = PBXBuildFile; fileRef = 0329AD6E179A944C002F4FD1 /* main.c */; };
+		035F7A32179F0EFE00F88807 /* libJMsg.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03948103179A970A00AF353E /* libJMsg.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +51,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				035F7A32179F0EFE00F88807 /* libJMsg.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +202,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../src/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = macosx;
@@ -227,6 +230,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "../../src/**";
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				SDKROOT = macosx;
 			};
@@ -256,7 +260,7 @@
 				0329AD73179A944C002F4FD1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 		0329AD74179A944C002F4FD1 /* Build configuration list for PBXNativeTarget "shell" */ = {
 			isa = XCConfigurationList;
@@ -265,7 +269,7 @@
 				0329AD76179A944C002F4FD1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
