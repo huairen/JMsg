@@ -1,13 +1,24 @@
 #ifndef NETWORK_H_
 #define NETWORK_H_
 
-#define INVALID_SOCKET -1
-#define SOCKET_ERROR -1
+#ifdef _WIN32
+#include <WinSock2.h>
+#pragma comment(lib,"ws2_32.lib")
+#else
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <fcntl.h>
+#endif
+
+// #define SOCKET_INVALID -1
+// #define SOCKET_ERROR -1
 
 enum net_error {
-    ERROR_SUCCESS,
-    ERROR_WOULD_BLOCK,
-    ERROR_UNKNOWN,
+    ERR_SUCCESS,
+    ERR_WOULD_BLOCK,
+    ERR_UNKNOWN,
 };
 
 struct net_address {
