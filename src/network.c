@@ -1,11 +1,6 @@
 #include "network.h"
 #include <stdio.h>
 #include <memory.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <fcntl.h>
 
 
 static int init_count = 0;
@@ -32,7 +27,7 @@ static void socket_to_net_address(const struct sockaddr_in *sock_addr, struct ne
 
 static int get_last_error()
 {
-    return ERROR_UNKNOWN;
+    return ERR_UNKNOWN;
 }
 
 int net_init()
@@ -71,7 +66,7 @@ int net_open_udp(int port)
         return get_last_error();
     
     udp_port = port;
-    return ERROR_SUCCESS;
+    return ERR_SUCCESS;
 }
 
 int net_get_udp()
@@ -82,7 +77,11 @@ int net_get_udp()
 void net_close_udp()
 {
     if (udp_socket != INVALID_SOCKET) {
+#ifdef _WIN32
+		closesocket(udp_socket);
+#else
         close(udp_socket);
+#endif
         udp_socket = INVALID_SOCKET;
     }
 }
@@ -94,7 +93,7 @@ int net_send_to(struct net_address *addr, const char* buffer, int buff_len)
     if(sendto(udp_socket, buffer, buff_len, 0,
               (struct sockaddr*)&sock_addr, sizeof(sock_addr)) == SOCKET_ERROR)
         return get_last_error();
-    return ERROR_SUCCESS;
+    return ERR_SUCCESS;
 }
 
 int net_bind(int socket, struct net_address *addr)
@@ -105,15 +104,15 @@ int net_bind(int socket, struct net_address *addr)
     net_to_socket_address(addr, &sock_addr);
     err = bind(socket, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
     if (err == 0)
-        return ERROR_SUCCESS;
+        return ERR_SUCCESS;
     return get_last_error();
 }
 
 int net_set_broadcast(int socket, int broadcast)
 {
-    int err = setsockopt(socket, SOL_SOCKET, SO_BROADCAST, &broadcast, sizeof(broadcast));
+    int err = setsockopt(socket, SOL_SOCKET, SO_BROADCAST, (const char*)&broadcast, sizeof(broadcast));
     if(err == 0)
-        return ERROR_SUCCESS;
+        return ERR_SUCCESS;
     return get_last_error();
 }
 
@@ -126,6 +125,6 @@ int net_set_block(int socket, int block)
     int err = fcntl(socket, F_SETFL, O_NONBLOCK, notblock);
 #endif
     if(err == 0)
-        return ERROR_SUCCESS;
+        return ERR_SUCCESS;
     return get_last_error();
 }

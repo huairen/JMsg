@@ -1,10 +1,14 @@
 #include "messages.h"
 #include "user.h"
 #include "network.h"
-#include <unistd.h>
-#include <netdb.h>
 #include <stdio.h>
 #include <string.h>
+
+#ifdef _WIN32
+#else
+#include <unistd.h>
+#include <netdb.h>
+#endif
 
 static struct host_info local_host;
 
@@ -20,23 +24,24 @@ static void make_msg(uint32 time, int command, const char *msg, char *buff, int 
 
 static int socket_init()
 {
+	struct net_address addr;
+
     if(!net_init())
         return 0;
     
-    if(net_open_udp(2426) != ERROR_SUCCESS)
+    if(net_open_udp(2426) != ERR_SUCCESS)
         return 0;
     
-    struct net_address addr;
     addr.ip[0] = 0;
     addr.port = 2425;
     
-    if(net_bind(net_get_udp(), &addr) != ERROR_SUCCESS)
+    if(net_bind(net_get_udp(), &addr) != ERR_SUCCESS)
         return 0;
     
-    if(net_set_block(net_get_udp(), 0) != ERROR_SUCCESS)
+    if(net_set_block(net_get_udp(), 0) != ERR_SUCCESS)
         return 0;
     
-    if(net_set_broadcast(net_get_udp(), 1) != ERROR_SUCCESS)
+    if(net_set_broadcast(net_get_udp(), 1) != ERR_SUCCESS)
         return 0;
     
     return 1;
@@ -53,10 +58,10 @@ int msg_init()
     if(gethostname(local_host.host_name, sizeof(local_host.host_name)) != 0)
         return 0;
     
-    if(getlogin_r(local_host.user_name, sizeof(local_host.user_name)) != 0)
-        return 0;
+//     if(getlogin_r(local_host.user_name, sizeof(local_host.user_name)) != 0)
+//         return 0;
     
-    hent = gethostbyname(local_host.host_name);
+//     hent = gethostbyname(local_host.host_name);
     
     
     return 1;
@@ -65,11 +70,11 @@ int msg_init()
 void notify_status(enum user_status status)
 {
     char buff[1024];
-    int buff_len;
+	int buff_len;
+	struct net_address addr;
     
     make_msg(1, status, "", buff, &buff_len);
     
-    struct net_address addr;
     strcpy(addr.ip, "127.0.0.1");
     addr.port = 2425;
     
