@@ -3,6 +3,7 @@
 *.suo
 *.idb
 *.pdb
+*.ncb
 Debug
 Release
 .DS_Store
