@@ -55,6 +55,7 @@ static int get_last_error()
             return NET_ERR_WOULD_BLOCK;
     }
 #else
+    printf("error: %d\n", errno);
     if(errno == EAGAIN)
         return NET_ERR_WOULD_BLOCK;
     else if(errno == 0)
@@ -78,7 +79,7 @@ int net_init()
 
 void net_shutdown()
 {
-    net_close_udp();
+    net_udp_close();
     init_count--;
     
 #ifdef _WINDOWS
@@ -89,25 +90,28 @@ void net_shutdown()
 #endif
 }
 
-int net_open_udp(int port)
+int net_udp_open(int port, int is_bind)
 {
     if(udp_socket != INVALID_SOCKET)
-        net_close_udp();
+        net_udp_close();
     
     udp_socket = socket(AF_INET, SOCK_DGRAM, 0);
     if(udp_socket == INVALID_SOCKET)
         return get_last_error();
     
+    if(is_bind) {
+        int err = net_bind_port(udp_socket, port);
+        if(err != NET_ERR_SUCCESS) {
+            net_udp_close();
+            return err;
+        }
+    }
+    
     udp_port = port;
     return NET_ERR_SUCCESS;
 }
 
-int net_get_udp()
-{
-    return udp_socket;
-}
-
-void net_close_udp()
+void net_udp_close()
 {
     if (udp_socket != INVALID_SOCKET) {
 		closesocket(udp_socket);
@@ -117,12 +121,27 @@ void net_close_udp()
 
 int net_send_to(struct net_address *addr, const char* buffer, int buff_len)
 {
+    int bytes_send;
     struct sockaddr_in sock_addr;
     net_to_socket_address(addr, &sock_addr);
-    if(sendto(udp_socket, buffer, buff_len, 0,
-              (struct sockaddr*)&sock_addr, sizeof(sock_addr)) == SOCKET_ERROR)
-        return get_last_error();
-    return NET_ERR_SUCCESS;
+    
+    bytes_send = (int)sendto(udp_socket, buffer, buff_len, 0, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
+    return bytes_send;
+}
+
+int net_recv_from(struct net_address *addr, char* buffer, int buff_len)
+{
+    int bytes_read = -1;
+    struct sockaddr_in sock_addr;
+    unsigned int addr_len = sizeof(sock_addr);
+    
+    if(udp_socket != INVALID_SOCKET)
+        bytes_read = (int)recvfrom(udp_socket, buffer, buff_len, 0, (struct sockaddr*)&sock_addr, &addr_len);
+    
+    if(bytes_read > 0)
+        socket_to_net_address(&sock_addr, addr);
+    
+    return bytes_read;
 }
 
 int net_bind(int socket, struct net_address *addr)
@@ -133,6 +152,21 @@ int net_bind(int socket, struct net_address *addr)
     net_to_socket_address(addr, &sock_addr);
     err = bind(socket, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
     if (err == 0)
+        return NET_ERR_SUCCESS;
+    return get_last_error();
+}
+
+int net_bind_port(int socket, int port)
+{
+    int err;
+    struct sockaddr_in sock_addr;
+    
+    sock_addr.sin_family = AF_INET;
+    sock_addr.sin_port = htons(port);
+    sock_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    
+    err = bind(socket, (struct sockaddr*)&sock_addr, sizeof(sock_addr));
+    if(err == 0)
         return NET_ERR_SUCCESS;
     return get_last_error();
 }
