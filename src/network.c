@@ -1,10 +1,11 @@
 #include "network.h"
 #include <stdio.h>
 #include <memory.h>
+#include <string.h>
 
 #ifdef _WIN32
 #include <WinSock2.h>
-
+#include <IPHlpApi.h>
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -40,14 +41,23 @@ static void net_to_socket_address(const struct net_address *addr, struct sockadd
 
 static void socket_to_net_address(const struct sockaddr_in *sock_addr, struct net_address *addr)
 {
-    strcpy(addr->ip, inet_ntoa(sock_addr->sin_addr));
+    strcpy_s(addr->ip, sizeof(addr->ip), inet_ntoa(sock_addr->sin_addr));
     addr->port = ntohs(sock_addr->sin_port);
+}
+
+static void calc_broadcast_addr(const char *ip, const char *mask, char *broadcast, int len)
+{
+	int ip_addr = inet_addr(ip);
+	int mask_addr = inet_addr(mask);
+	int broad_addr = (ip_addr & mask_addr) | ~mask_addr;
+	strcpy_s(broadcast, len, inet_ntoa(*(struct in_addr*)&broad_addr));
 }
 
 static int get_last_error()
 {
 #ifdef _WIN32
-    int err = WSAGetLastError();
+	int err = WSAGetLastError();
+	printf("error: %d\n", err);
     switch (err) {
         case 0:
             return NET_ERR_SUCCESS;
@@ -64,12 +74,18 @@ static int get_last_error()
     return NET_ERR_UNKNOWN;
 }
 
+
+//---------------------------------------------------------------
+
 int net_init()
 {
-#ifdef _WINDOWS
+#ifdef _WIN32
     if(!init_count)
     {
-        
+		WSADATA wsd;
+        if(WSAStartup(MAKEWORD(2,2), &wsd) != 0 &&
+			WSAStartup(MAKEWORD(1,1), &wsd) != 0)
+			return 0;
     }
 #endif
     
@@ -82,10 +98,10 @@ void net_shutdown()
     net_udp_close();
     init_count--;
     
-#ifdef _WINDOWS
+#ifdef _WIN32
     if(!init_count)
     {
-        
+        WSACleanup();
     }
 #endif
 }
@@ -117,6 +133,11 @@ void net_udp_close()
 		closesocket(udp_socket);
         udp_socket = INVALID_SOCKET;
     }
+}
+
+int net_udp_socket()
+{
+	return udp_socket;
 }
 
 int net_send_to(struct net_address *addr, const char* buffer, int buff_len)
@@ -192,13 +213,74 @@ int net_set_block(int socket, int block)
     return get_last_error();
 }
 
-void net_process()
+#ifdef _WIN32
+struct net_device* net_device_list()
 {
-    ssize_t bytes_read = -1;
-    char temp_buff[MAX_PACKET_SIZE];
-    struct sockaddr sa;
-    socklen_t addr_len = sizeof(sa);
-    
-    if(udp_socket != INVALID_SOCKET)
-        bytes_read = recvfrom(udp_socket, temp_buff, MAX_PACKET_SIZE, 0, &sa, &addr_len);
+	struct net_device *device = NULL;
+	struct net_device **device_ptr = &device;
+
+	unsigned long buff_size;
+	PIP_ADAPTER_INFO adapter_info;
+	
+	GetAdaptersInfo(NULL, &buff_size);
+
+	adapter_info = (PIP_ADAPTER_INFO)malloc(buff_size);
+	if(GetAdaptersInfo(adapter_info, &buff_size) == ERROR_SUCCESS) {
+		int mac_len = sizeof(device->mac);
+
+		while(adapter_info)	{
+			unsigned int i;
+			int buff_pos = 0;
+			IP_ADDR_STRING *addr_str = &adapter_info->IpAddressList;
+			struct net_device *new_dev = (struct net_device *)malloc(sizeof(struct net_device));
+			
+			if(new_dev == NULL)	{
+				net_device_list_free(device);
+				return NULL;
+			}
+
+			strcpy_s(new_dev->name, sizeof(new_dev->name), adapter_info->Description);
+			
+			for (i=0; i<adapter_info->AddressLength; ++i) {
+				sprintf_s(new_dev->mac + buff_pos, mac_len - buff_pos,
+					i ? "-%02x" : "%02x", adapter_info->Address[i]);
+
+				buff_pos = strlen(new_dev->mac);
+			}
+			
+			while(addr_str) {
+				strcpy_s(new_dev->ip, sizeof(new_dev->ip), addr_str->IpAddress.String);
+				strcpy_s(new_dev->mask, sizeof(new_dev->mask), addr_str->IpMask.String);
+				calc_broadcast_addr(new_dev->ip,new_dev->mask,new_dev->broad, sizeof(new_dev->broad));
+				addr_str = addr_str->Next;
+			}
+
+			new_dev->next = NULL;
+			*device_ptr = new_dev;
+			device_ptr = &new_dev->next;
+
+			adapter_info = adapter_info->Next;
+		}
+	}
+
+	return device;
+}
+
+#else
+struct net_device* net_device_list()
+{
+	pcap_findalldevs;
+	ioctl (fd, SIOCGIFCONF, (char *) &ifc);
+	return 0;
+}
+
+#endif
+
+void net_device_list_free(struct net_device *list)
+{
+	if(list != NULL) {
+		struct net_device *tmp = list;
+		list = list->next;
+		free(tmp);
+	}
 }

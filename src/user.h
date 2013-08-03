@@ -2,12 +2,12 @@
 #define USER_H_
 
 #include "types.h"
+#include "network.h"
 
 struct host_info {
     char user_name[MAX_NAMELEN];
     char host_name[MAX_NAMELEN];
-    uint32 addr;
-    uint16 port;
+    struct net_address addr;
 };
 
 struct user_info {
