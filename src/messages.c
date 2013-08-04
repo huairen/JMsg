@@ -4,15 +4,20 @@
 #include "config.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #ifdef _WIN32
 #include <WinSock2.h>
+#include <WS2tcpip.h>
 #include <time.h>
 
 #else
 #include <unistd.h>
 #include <netdb.h>
+
+#define strcpy_s(dest,dest_len,src) strlcpy(dest,src,dest_len)
+#define sprintf_s snprintf
 
 #endif
 
@@ -87,7 +92,7 @@ static int parse_msg(char *buff, int buff_len, struct msg_packet *pak)
 	pak->msg[0] = 0;
 	pak->msg_ex[0] = 0;
 	
-	if(tok = separate_token(NULL, 0, &p))
+	if((tok = separate_token(NULL, 0, &p)))
 		unix_to_local(tok, pak->msg, sizeof(pak->msg));
 
 	return 1;
@@ -129,12 +134,14 @@ static void make_broadcast_list()
 			dev_ptr = dev_ptr->next;
 
 			if(dev_ptr && broad_ptr->next == NULL) {
-				broad_ptr->next = (struct broadcast_list *)malloc(sizeof(struct broadcast_list));
+				broad_ptr->next = (struct broadcast_list*)malloc(sizeof(struct broadcast_list));
 				memset(broad_ptr->next, 0, sizeof(struct broadcast_list));
 			}
 
 			broad_ptr = broad_ptr->next;
 		}
+
+		net_device_list_free(device);
 	}
 
 	if((broadcast_head.ip[0] == 0) || (broadcast_mode & LIMIT_BROADCAST)) {
@@ -182,7 +189,6 @@ static int msg_send(const char* ip_addr, int command, const char *message)
  */
 int msg_init()
 {
-	uint32 name_len;
 	char host[MAX_NAMELEN];
 	struct hostent* hostinfo;
 
@@ -192,21 +198,22 @@ int msg_init()
 	if(gethostname(host, sizeof(host)) == -1)
 		host[0] = 0;
     
-    //获取主机名跟用户名
+    //get hostname and username
 #ifdef _WIN32
-	name_len = sizeof(local_host.host_name);
-	if(!GetComputerName(local_host.host_name, &name_len))
-		return 0;
+	{
+        uint32 name_len = sizeof(local_host.host_name);
+        if(!GetComputerName(local_host.host_name, &name_len))
+            return 0;
 
-	name_len = sizeof(local_host.user_name);
-	if(!GetUserName(local_host.user_name, &name_len))
-		return 0;
-
+        name_len = sizeof(local_host.user_name);
+        if(!GetUserName(local_host.user_name, &name_len))
+            return 0;
+    }
 #else
 	if(host[0] == 0)
 		return 0;
 
-	strcpy(local_host.host_name, host);
+	strcpy_s(local_host.host_name, sizeof(local_host.host_name), host);
     if(getlogin_r(local_host.user_name, sizeof(local_host.user_name)) != 0)
         return 0;
 #endif
@@ -217,8 +224,7 @@ int msg_init()
 		if(device_index >= hostinfo->h_length-1)
 			device_index = 0;
 
-		strcpy_s(local_host.addr.ip, sizeof(local_host.addr),
-			inet_ntoa(*(struct in_addr*)hostinfo->h_addr_list[device_index]));
+		inet_ntop(hostinfo->h_addrtype, hostinfo->h_addr_list[0], local_host.addr.ip, sizeof(local_host.addr.ip));
 	}
 	
 	local_host.addr.port = cfg_bind_port();

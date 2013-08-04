@@ -12,10 +12,10 @@ enum net_error {
     NET_ERR_UNKNOWN,
 };
 
-// struct host_address {
-// 	char ip[20];
-// 	unsigned short port;
-// };
+struct host_address {
+ 	char ip[20];
+ 	unsigned short port;
+};
 // 
 // struct net_address {
 //     unsigned int ip;

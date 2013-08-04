@@ -33,7 +33,6 @@ int local_to_unix(const char *src, char *dest, int dest_len)
 {
 	char *sv_dest = dest;
 	char *max_dest = dest + dest_len - 1;
-	int len = 0;
 
 	while (*src && dest < max_dest) {
 		if ((*dest = *src++) != '\r') dest++;

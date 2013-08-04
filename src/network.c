@@ -6,18 +6,22 @@
 #ifdef _WIN32
 #include <WinSock2.h>
 #include <IPHlpApi.h>
+
 #else
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/ioctl.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <fcntl.h>
 #include <errno.h>
+#include <net/if.h>
 
 #define INVALID_SOCKET -1
 #define SOCKET_ERROR -1
 
 #define closesocket close
+#define strcpy_s(dest,dest_len,src) strlcpy(dest,src,dest_len)
 
 #endif
 
@@ -43,14 +47,6 @@ static void socket_to_net_address(const struct sockaddr_in *sock_addr, struct ne
 {
     strcpy_s(addr->ip, sizeof(addr->ip), inet_ntoa(sock_addr->sin_addr));
     addr->port = ntohs(sock_addr->sin_port);
-}
-
-static void calc_broadcast_addr(const char *ip, const char *mask, char *broadcast, int len)
-{
-	int ip_addr = inet_addr(ip);
-	int mask_addr = inet_addr(mask);
-	int broad_addr = (ip_addr & mask_addr) | ~mask_addr;
-	strcpy_s(broadcast, len, inet_ntoa(*(struct in_addr*)&broad_addr));
 }
 
 static int get_last_error()
@@ -216,8 +212,8 @@ int net_set_block(int socket, int block)
 #ifdef _WIN32
 struct net_device* net_device_list()
 {
-	struct net_device *device = NULL;
-	struct net_device **device_ptr = &device;
+	struct net_device *all_devs = NULL;
+	struct net_device **device_ptr = &all_devs;
 
 	unsigned long buff_size;
 	PIP_ADAPTER_INFO adapter_info;
@@ -226,7 +222,7 @@ struct net_device* net_device_list()
 
 	adapter_info = (PIP_ADAPTER_INFO)malloc(buff_size);
 	if(GetAdaptersInfo(adapter_info, &buff_size) == ERROR_SUCCESS) {
-		int mac_len = sizeof(device->mac);
+		int mac_len = sizeof(all_devs->mac);
 
 		while(adapter_info)	{
 			unsigned int i;
@@ -235,7 +231,7 @@ struct net_device* net_device_list()
 			struct net_device *new_dev = (struct net_device *)malloc(sizeof(struct net_device));
 			
 			if(new_dev == NULL)	{
-				net_device_list_free(device);
+				net_device_list_free(all_devs);
 				return NULL;
 			}
 
@@ -249,9 +245,16 @@ struct net_device* net_device_list()
 			}
 			
 			while(addr_str) {
+				int ip_addr,mask_addr,broad_addr;
+
 				strcpy_s(new_dev->ip, sizeof(new_dev->ip), addr_str->IpAddress.String);
 				strcpy_s(new_dev->mask, sizeof(new_dev->mask), addr_str->IpMask.String);
-				calc_broadcast_addr(new_dev->ip,new_dev->mask,new_dev->broad, sizeof(new_dev->broad));
+
+				ip_addr = inet_addr(new_dev->ip);
+				mask_addr = inet_addr(new_dev->mask);
+				broad_addr = (ip_addr & mask_addr) | ~mask_addr;
+				strcpy_s(new_dev->broad, sizeof(new_dev->broad), inet_ntoa(*(struct in_addr*)&broad_addr));
+
 				addr_str = addr_str->Next;
 			}
 
@@ -263,14 +266,36 @@ struct net_device* net_device_list()
 		}
 	}
 
-	return device;
+	return all_devs;
 }
 
 #else
 struct net_device* net_device_list()
 {
-	pcap_findalldevs;
-	ioctl (fd, SIOCGIFCONF, (char *) &ifc);
+    const static int MAX_DEV = 16;
+    int fd, num_devs, i;
+    struct ifconf ifc;
+    struct ifreq devs[MAX_DEV];
+    struct ifreq *dev_ptr;
+    
+    fd = socket(AF_INET, SOCK_DGRAM, 0);
+    if(fd < 0)
+        return NULL;
+    
+    ifc.ifc_len = sizeof(devs);
+    ifc.ifc_req = devs;
+    
+    if(ioctl(fd, SIOCGIFCONF, &ifc) != 0)
+        return NULL;
+    
+    num_devs = ifc.ifc_len / sizeof(struct ifreq);
+    dev_ptr = devs;
+    
+    for (i = 0; i < 16; i++) {
+        printf("name %s\n", dev_ptr->ifr_name);
+        dev_ptr += sizeof(struct ifreq);
+
+    }
 	return 0;
 }
 

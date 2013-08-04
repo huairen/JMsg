@@ -11,7 +11,7 @@ void udp_client()
 	net_init();
     net_udp_open(0, 0);
     
-    strcpy(addr.ip, "127.0.0.1");
+    strcpy_s(addr.ip, sizeof(addr.ip), "127.0.0.1");
     addr.port = 13451;
     
     bytes_read = net_send_to(&addr, "test udp", strlen("test udp"));
