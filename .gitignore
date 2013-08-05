@@ -4,6 +4,7 @@
 *.idb
 *.pdb
 *.ncb
+*.opensdf
 Debug
 Release
 .DS_Store

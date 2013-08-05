@@ -1,7 +1,7 @@
 #include "config.h"
 
 static int bind_port = 2425;
-static int broadcast_mode = LIMIT_BROADCAST;
+static int broadcast_mode = DIRECT_BROADCAST;
 static int net_device_index = 0;
 
 int cfg_bind_port()

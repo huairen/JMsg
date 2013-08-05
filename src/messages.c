@@ -1,102 +1,18 @@
 #include "messages.h"
-#include "user.h"
 #include "network.h"
 #include "config.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-#ifdef _WIN32
-#include <WinSock2.h>
-#include <WS2tcpip.h>
-#include <time.h>
-
-#else
-#include <unistd.h>
-#include <netdb.h>
-
-#define strcpy_s(dest,dest_len,src) strlcpy(dest,src,dest_len)
-#define sprintf_s snprintf
-
-#endif
-
-extern char *separate_token(char *buf, char separetor, char **handle);
-extern int local_to_unix(const char *src, char *dest, int dest_len);
-extern int unix_to_local(const char *src, char *dest, int dest_len);
+extern int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *buff_len);
+extern int parse_msg(char *buff, int buff_len, struct msg_packet *packet);
+extern struct cmd_handle cmd_table[];
+extern const int cmd_table_count;
 
 struct broadcast_list{
 	char ip[MAX_IP_LEN];
 	struct broadcast_list *next;
-};
+} broadcast_head;
 
-static struct broadcast_list broadcast_head;
-static struct host_info local_host;
-
-//IPMSG的报文格式：版本号:包编号:发送者姓名:发送者主机名:命令字:附加信息
-static int make_msg(int command, const char *msg, char *buff, int *buff_len)
-{
-    int packet_len;
-	int packet_id;
-	int max_len;
-
-	if(buff_len == 0)
-		return 0;
-
-	max_len = *buff_len;
-	packet_id = (int)time(NULL) + 1;
-    
-    packet_len = sprintf_s(buff, max_len, "%d:%u:%s:%s:%u", MSG_VERSION, packet_id, local_host.user_name, local_host.host_name, command);
-    
-	if(msg) {
-		packet_len += local_to_unix(msg, buff + packet_len, max_len - packet_len);
-	}
-
-    *buff_len = packet_len;
-	return 1;
-}
-
-static int parse_msg(char *buff, int buff_len, struct msg_packet *pak)
-{
-	char *ex_str = NULL, *tok, *p;
-	int len, ex_len = 0;
-
-	len = (int)strlen(buff);
-
-	if(buff_len > len + 1) {
-		ex_str = buff + len + 1;
-		ex_len = (int)strlen(ex_str);
-	}
-
-	if((tok = separate_token(buff, ':', &p)) == NULL)
-		return 0;
-	if((pak->version = atoi(tok)) != MSG_VERSION)
-		return 0;
-
-	if((tok = separate_token(NULL, ':', &p)) == NULL)
-		return 0;
-	pak->id = atoi(tok);
-
-	if ((tok = separate_token(NULL, ':', &p)) == NULL)
-		return 0;
-	strcpy_s(pak->host.user_name, sizeof(pak->host.user_name), tok);
-
-	if ((tok = separate_token(NULL, ':', &p)) == NULL)
-		return 0;
-	strcpy_s(pak->host.host_name, sizeof(pak->host.host_name), tok);
-
-	if((tok = separate_token(NULL, ':', &p)) == NULL)
-		return 0;
-
-	pak->command = atoi(tok);
-	pak->msg[0] = 0;
-	pak->msg_ex[0] = 0;
-	
-	if((tok = separate_token(NULL, 0, &p)))
-		unix_to_local(tok, pak->msg, sizeof(pak->msg));
-
-	return 1;
-}
+struct host_info local_host;
 
 static void make_broadcast_list()
 {
@@ -169,21 +85,6 @@ static void make_broadcast_list()
 	}
 }
 
-static int msg_send(const char* ip_addr, int command, const char *message)
-{
-	struct net_address addr;
-	char buff[MAX_UDPBUF];
-	int buff_len = MAX_UDPBUF;
-
-	strcpy_s(addr.ip, sizeof(addr.ip), ip_addr);
-	addr.port = cfg_bind_port();
-
-	if(!make_msg(command, message, buff, &buff_len))
-		return 0;
-
-	return net_send_to(&addr, buff, buff_len);
-}
-
 /*
  * 对外接口
  */
@@ -240,6 +141,21 @@ int msg_init()
     return 1;
 }
 
+int msg_send(const char* ip_addr, int command, const char *message, const char* message_ex)
+{
+	struct net_address addr;
+	char buff[MAX_UDPBUF];
+	int buff_len = MAX_UDPBUF;
+
+	strcpy_s(addr.ip, sizeof(addr.ip), ip_addr);
+	addr.port = cfg_bind_port();
+
+	if(!make_msg(command, message, message_ex, buff, &buff_len))
+		return 0;
+
+	return net_send_to(&addr, buff, buff_len);
+}
+
 int msg_recv(struct msg_packet *packet)
 {
 	struct net_address addr;
@@ -250,23 +166,34 @@ int msg_recv(struct msg_packet *packet)
 	if(buff_len <= 0)
 		return 0;
 
+	buff[buff_len] = 0;
 	packet->host.addr = addr;
 	return parse_msg(buff, buff_len, packet);
 }
 
-void notify_status(enum user_status status)
-{
-}
-
-int broadcast(int cmd, const char* msg)
+int broadcast(int command, const char* msg)
 {
 	struct broadcast_list *broad_ptr = &broadcast_head;
-	
+
 	while(broad_ptr) {
-		if(!msg_send(broad_ptr->ip, cmd, msg))
+		if(!msg_send(broad_ptr->ip, command, msg, ""))
 			return 0;
 		broad_ptr = broad_ptr->next;
 	}
 
 	return 1;
+}
+
+int process_msg(struct msg_packet *packet)
+{
+	int i;
+	for (i=0; i<cmd_table_count; ++i)
+	{
+		if(cmd_table[i].cmd == (uint8)packet->command)
+		{
+			cmd_table[i].handle_func(packet);
+			return 1;
+		}
+	}
+	return 0;
 }

@@ -73,6 +73,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\config.c" />
+    <ClCompile Include="..\..\src\ipmsg.c" />
     <ClCompile Include="..\..\src\messages.c" />
     <ClCompile Include="..\..\src\miscfunc.c" />
     <ClCompile Include="..\..\src\network.c" />
@@ -80,7 +81,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\src\config.h" />
+    <ClInclude Include="..\..\src\ipmsg.h" />
     <ClInclude Include="..\..\src\messages.h" />
+    <ClInclude Include="..\..\src\miscfunc.h" />
     <ClInclude Include="..\..\src\network.h" />
     <ClInclude Include="..\..\src\types.h" />
     <ClInclude Include="..\..\src\user.h" />
