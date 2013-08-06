@@ -4,12 +4,15 @@
 #include <process.h>
 #include "messages.h"
 #include "ipmsg.h"
+#include "user.h"
+#include "config.h"
+#include "console.h"
 
-extern void console_clear_line(int line);
 extern int shell_parse_cmd(const char* cmd);
+extern struct user_info talk_user;
 
 char buff[1024] = {0};
-char chat_addr[20] = {0};
+int last_packet_no = 0;
 
 void recv_func(void* arg)
 {
@@ -22,9 +25,15 @@ void recv_func(void* arg)
 		switch (GET_MODE(msg.command))
 		{
 		case IPMSG_SENDMSG:
-			console_clear_line(-1);
-			printf("%s: %s\n", msg.msg, msg.msg_ex);
-			printf("%s",buff);
+			if(last_packet_no != msg.time)
+			{
+				last_packet_no = msg.time;
+
+				console_clear_line(-1);
+				if(strcmp(talk_user.host.host_name, msg.host.host_name) == 0)
+					printf("%s: %s\n", user_show_name(&talk_user), msg.msg);
+				printf("%s",buff);
+			}
 			break;
 		}
 	}
@@ -37,7 +46,7 @@ int main(int argc, char* argv[])
 	int is_ch = 0;
 
 	msg_init();
-	broadcast(IPMSG_BR_ENTRY,NULL);
+	send_status(IPMSG_BR_ENTRY);
 
  	_beginthread(recv_func,0,0);
 
@@ -95,8 +104,13 @@ int main(int argc, char* argv[])
 		if(buff[0] == '-' && shell_parse_cmd(buff+1))
 			continue;
 
-		if(chat_addr[0] != 0)
-			msg_send(chat_addr,IPMSG_SENDMSG,buff,NULL);
+		if(talk_user.host.addr.ip[0] != 0)
+		{
+			msg_send(talk_user.host.addr.ip,IPMSG_SENDMSG,buff,NULL);
+			console_set_text_color(FOREGROUND_RED);
+			printf("%s: %s\n", cfg_nick_name(), buff);
+			console_set_text_color(0xffff);
+		}
 	}
 
 	return 0;

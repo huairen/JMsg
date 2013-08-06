@@ -85,6 +85,11 @@ static void make_broadcast_list()
 	}
 }
 
+static int host_status()
+{
+	return 0;
+}
+
 /*
  * 对外接口
  */
@@ -171,7 +176,7 @@ int msg_recv(struct msg_packet *packet)
 	return parse_msg(buff, buff_len, packet);
 }
 
-int broadcast(int command, const char* msg)
+int broadcast(int command, const char* msg, const char* msg_ex)
 {
 	struct broadcast_list *broad_ptr = &broadcast_head;
 
@@ -196,4 +201,9 @@ int process_msg(struct msg_packet *packet)
 		}
 	}
 	return 0;
+}
+
+void send_status(int command)
+{
+	broadcast(command | host_status(), cfg_nick_name(), cfg_group_name());
 }

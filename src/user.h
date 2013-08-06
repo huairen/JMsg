@@ -23,9 +23,16 @@ struct user_list {
 	struct user_info info;
 };
 
-void user_add();
-void user_remove();
-struct user_info* user_find();
+void user_add(struct user_info* user);
+void user_remove(struct user_info* user);
+void user_clear();
+struct user_info* user_find_by_host(struct host_info *host);
+struct user_info* user_find_by_index(int index);
+
+const char* user_show_name(struct user_info *user);
+int user_is_same(struct host_info *user1, struct host_info *user2);
+
+void user_list_dump();
 
 
 #endif

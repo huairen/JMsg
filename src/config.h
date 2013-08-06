@@ -7,6 +7,8 @@
 int cfg_bind_port();
 int cfg_broadcast_mode();
 int cfg_net_device();			//°ó¶¨Íø¿¨Ë÷Òý
+const char* cfg_nick_name();
+const char* cfg_group_name();
 
 void cfg_set_broadcast_mode(int mode);
 

@@ -7,10 +7,12 @@ extern struct host_info local_host;
 
 void handle_user_entry(struct msg_packet *packet);
 void handle_answer_entry(struct msg_packet *packet);
+void handle_send_msg(struct msg_packet *packet);
 
 struct cmd_handle cmd_table[] = {
 	{IPMSG_BR_ENTRY, &handle_user_entry},
 	{IPMSG_ANSENTRY, &handle_answer_entry},
+	{IPMSG_SENDMSG, &handle_send_msg},
 };
 
 const int cmd_table_count = sizeof(cmd_table) / sizeof(struct cmd_handle);
@@ -26,7 +28,7 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 	int packet_len;
 	int packet_id;
 	int max_len;
-	int ex_len;
+	int ex_len = 0;
 	int cmd = GET_MODE(command);
 	int is_br_cmd = cmd == IPMSG_BR_ENTRY ||
 					cmd == IPMSG_BR_EXIT ||
@@ -40,7 +42,9 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 	
 	packet_len = sprintf_s(buff, max_len, "%d:%u:%s:%s:%u:", IPMSG_VERSION, packet_id, local_host.user_name, local_host.host_name, command);
 
-	ex_len = strlen(msg_ex);
+	if(msg_ex)
+		ex_len = strlen(msg_ex);
+
 	if(ex_len + packet_len + 2 >= max_len)
 		ex_len = 0;
 	max_len -= ex_len;
@@ -114,7 +118,7 @@ int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
 			char *tmp = NULL;
 			if(is_utf8)
 				tmp = u8_to_a(ex_str);
-			strcpy_s(packet->msg_ex, sizeof(packet->msg_ex), tmp ? tmp : tok);
+			strcpy_s(packet->msg_ex, sizeof(packet->msg_ex), tmp ? tmp : ex_str);
 			free(tmp);
 		}
 	}
@@ -130,5 +134,25 @@ void handle_user_entry(struct msg_packet *packet)
 
 void handle_answer_entry(struct msg_packet *packet)
 {
+	struct user_info user;
+	memset(&user, 0, sizeof(user));
+	
+	user.host = packet->host;
+	if(packet->msg[0])
+		strcpy_s(user.nick_name,sizeof(user.nick_name), packet->msg);
+	if(packet->msg_ex[0])
+		strcpy_s(user.group_name,sizeof(user.group_name), packet->msg_ex);
 
+	user_add(&user);
+}
+
+void handle_send_msg(struct msg_packet *packet)
+{
+	char buff[64];
+	sprintf_s(buff, sizeof(buff), "%d", packet->time);
+
+	if ((packet->command & IPMSG_SENDCHECKOPT) &&
+		(packet->command & (IPMSG_BROADCASTOPT | IPMSG_AUTORETOPT)) == 0) {
+			msg_send(packet->host.addr.ip, IPMSG_RECVMSG, buff, NULL);
+	}
 }
