@@ -49,12 +49,22 @@ void console_clear_line(int line)
 		else if(line == -2)
 			coord.Y = csbi.dwCursorPosition.Y ? csbi.dwCursorPosition.Y - 1 : 0;
 
-		FillConsoleOutputCharacter(hStdOut, (TCHAR) 32, csbi.dwSize.Y, coord, &count);
-		FillConsoleOutputAttribute(hStdOut, csbi.wAttributes, csbi.dwSize.Y, coord, &count);
+		FillConsoleOutputCharacter(hStdOut, (TCHAR) 32, csbi.dwSize.X, coord, &count);
+		FillConsoleOutputAttribute(hStdOut, csbi.wAttributes, csbi.dwSize.X, coord, &count);
 		SetConsoleCursorPosition(hStdOut, coord);
 	}
 }
 
+int console_current_line()
+{
+	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+
+	if(GetConsoleScreenBufferInfo(hStdOut, &csbi))
+		return csbi.dwCursorPosition.Y;
+
+	return -1;
+}
 void console_goto_xy(int x, int y)
 {
 	COORD coord = {x, y};

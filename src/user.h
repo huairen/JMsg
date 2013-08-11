@@ -4,35 +4,42 @@
 #include "types.h"
 #include "network.h"
 
-struct host_info {
-    char user_name[MAX_NAMELEN];
-    char host_name[MAX_NAMELEN];
-    struct net_address addr;
+#define MAX_MSG_LEN 1024
+#define MAX_NAME_LEN 80
+
+enum user_status {
+	USER_STATUS_ONLINE,
+	USER_STATUS_OFFLINE,
+	USER_STATUS_LEAVE,
+};
+
+struct user_message {
+	uint32 id;
+	uint32 time;
+	char* text;
 };
 
 struct user_info {
-    struct host_info host;
-	char nick_name[MAX_NAMELEN];
-    char group_name[MAX_NAMELEN];
-    char alter_name[MAX_NAMELEN];
+	uint32 id;
 	uint32 status;
+
+	char nick_name[MAX_NAME_LEN];
+	char group_name[MAX_NAME_LEN];
+	char alter_name[MAX_NAME_LEN];
+
+	struct net_address addr;
 };
 
-struct user_list {
-	struct user_list* next;
-	struct user_info info;
-};
-
-void user_add(struct user_info* user);
-void user_remove(struct user_info* user);
+struct user_info* user_add(uint32 user_id);
+struct user_info* user_find(uint32 user_id);
+void user_remove(uint32 user_id);
 void user_clear();
-struct user_info* user_find_by_host(struct host_info *host);
-struct user_info* user_find_by_index(int index);
+const char* user_show_name(uint32 user_id);
 
-const char* user_show_name(struct user_info *user);
-int user_is_same(struct host_info *user1, struct host_info *user2);
-
-void user_list_dump();
-
+//history record
+void user_push_msg(uint32 user_id, uint32 id, uint32 time, const char *text);
+uint32 user_unrend_count(uint32 user_id);
+struct user_message* user_unread_msg(uint32 user_id);
+struct user_message* user_read_msg(uint32 user_id, int index);
 
 #endif

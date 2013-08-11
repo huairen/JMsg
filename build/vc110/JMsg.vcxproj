@@ -10,6 +10,21 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\src\config.c" />
+    <ClCompile Include="..\..\src\jmsg.c" />
+    <ClCompile Include="..\..\src\miscfunc.c" />
+    <ClCompile Include="..\..\src\network.c" />
+    <ClCompile Include="..\..\src\user.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\src\config.h" />
+    <ClInclude Include="..\..\src\jmsg.h" />
+    <ClInclude Include="..\..\src\miscfunc.h" />
+    <ClInclude Include="..\..\src\network.h" />
+    <ClInclude Include="..\..\src\types.h" />
+    <ClInclude Include="..\..\src\user.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8015517D-A0D5-42A9-B023-28DF11904F8B}</ProjectGuid>
     <RootNamespace>JMsg</RootNamespace>
@@ -71,23 +86,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\src\config.c" />
-    <ClCompile Include="..\..\src\ipmsg.c" />
-    <ClCompile Include="..\..\src\messages.c" />
-    <ClCompile Include="..\..\src\miscfunc.c" />
-    <ClCompile Include="..\..\src\network.c" />
-    <ClCompile Include="..\..\src\user.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\src\config.h" />
-    <ClInclude Include="..\..\src\ipmsg.h" />
-    <ClInclude Include="..\..\src\messages.h" />
-    <ClInclude Include="..\..\src\miscfunc.h" />
-    <ClInclude Include="..\..\src\network.h" />
-    <ClInclude Include="..\..\src\types.h" />
-    <ClInclude Include="..\..\src\user.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

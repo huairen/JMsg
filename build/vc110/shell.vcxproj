@@ -11,6 +11,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\shell\ipmsg.c" />
+    <ClCompile Include="..\..\shell\ipmsg_cmd.c" />
+    <ClCompile Include="..\..\shell\lookup3.c" />
     <ClCompile Include="..\..\shell\main.c" />
     <ClCompile Include="..\..\shell\shell.c" />
     <ClCompile Include="..\..\shell\udp_example.c" />
@@ -18,6 +21,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\shell\console.h" />
+    <ClInclude Include="..\..\shell\ipmsg.h" />
+    <ClInclude Include="..\..\shell\ipmsg_cmd.h" />
+    <ClInclude Include="..\..\shell\shell.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{381FDE7C-313A-4104-87E8-795A1AE3971F}</ProjectGuid>

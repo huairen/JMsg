@@ -11,6 +11,8 @@
 #include <time.h>
 #include <Windows.h>
 
+#define strdup _strdup
+
 #else
 #include <unistd.h>
 #include <netdb.h>
@@ -23,9 +25,5 @@
 typedef unsigned int uint32;
 typedef unsigned short uint16;
 typedef unsigned char uint8;
-
-#define MAX_NAMELEN 80
-#define MAX_IP_LEN 20
-#define MAX_UDPBUF 32768
 
 #endif

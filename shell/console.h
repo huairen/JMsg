@@ -4,6 +4,7 @@
 void console_clear_colors(int ForgC, int BackC);
 void console_clear();
 void console_clear_line(int line);
+int console_current_line();
 void console_goto_xy(int x, int y);
 void console_set_text_color(int ForgC);
 void console_set_colors(int ForgC, int BackC);

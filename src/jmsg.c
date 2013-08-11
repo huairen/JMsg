@@ -1,18 +1,17 @@
-#include "messages.h"
+#include "jmsg.h"
 #include "network.h"
 #include "config.h"
-
-extern int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *buff_len);
-extern int parse_msg(char *buff, int buff_len, struct msg_packet *packet);
-extern struct cmd_handle cmd_table[];
-extern const int cmd_table_count;
 
 struct broadcast_list{
 	char ip[MAX_IP_LEN];
 	struct broadcast_list *next;
 } broadcast_head;
 
-struct host_info local_host;
+static char local_user_name[MAX_NAME_LEN] = {0};
+static char local_host_name[MAX_NAME_LEN] = {0};
+static struct net_address local_addr;
+static make_packet_handler make_packet_func = NULL;
+static parse_packet_handler parse_packet_func = NULL;
 
 static void make_broadcast_list()
 {
@@ -85,17 +84,12 @@ static void make_broadcast_list()
 	}
 }
 
-static int host_status()
-{
-	return 0;
-}
-
 /*
  * 对外接口
  */
 int msg_init()
 {
-	char host[MAX_NAMELEN];
+	char host[MAX_NAME_LEN];
 	struct hostent* hostinfo;
 
 	if(!net_init())
@@ -107,20 +101,20 @@ int msg_init()
     //get hostname and username
 #ifdef _WIN32
 	{
-        uint32 name_len = sizeof(local_host.host_name);
-        if(!GetComputerName(local_host.host_name, &name_len))
+        uint32 name_len = sizeof(local_host_name);
+        if(!GetComputerName(local_host_name, &name_len))
             return 0;
 
-        name_len = sizeof(local_host.user_name);
-        if(!GetUserName(local_host.user_name, &name_len))
+        name_len = sizeof(local_user_name);
+        if(!GetUserName(local_user_name, &name_len))
             return 0;
     }
 #else
 	if(host[0] == 0)
 		return 0;
 
-	strcpy_s(local_host.host_name, sizeof(local_host.host_name), host);
-    if(getlogin_r(local_host.user_name, sizeof(local_host.user_name)) != 0)
+	strcpy_s(local_host_name, sizeof(local_host_name), host);
+    if(getlogin_r(local_user_name, sizeof(local_user_name)) != 0)
         return 0;
 #endif
 
@@ -130,15 +124,14 @@ int msg_init()
 		if(device_index >= hostinfo->h_length-1)
 			device_index = 0;
 
-		inet_ntop(hostinfo->h_addrtype, hostinfo->h_addr_list[0], local_host.addr.ip, sizeof(local_host.addr.ip));
+		inet_ntop(hostinfo->h_addrtype, hostinfo->h_addr_list[0], local_addr.ip, sizeof(local_addr.ip));
 	}
 	
-	local_host.addr.port = cfg_bind_port();
-
 	if(net_udp_open(cfg_bind_port(), 0) != NET_ERR_SUCCESS)
 		return 0;
 
-	if(net_bind(net_udp_socket(), &local_host.addr))
+	local_addr.port = cfg_bind_port();
+	if(net_bind(net_udp_socket(), &local_addr))
 		return 0;
 
 	memset(&broadcast_head, 0, sizeof(broadcast_head));
@@ -152,10 +145,13 @@ int msg_send(const char* ip_addr, int command, const char *message, const char* 
 	char buff[MAX_UDPBUF];
 	int buff_len = MAX_UDPBUF;
 
+	if(make_packet_func == NULL)
+		return 0;
+
 	strcpy_s(addr.ip, sizeof(addr.ip), ip_addr);
 	addr.port = cfg_bind_port();
 
-	if(!make_msg(command, message, message_ex, buff, &buff_len))
+	if(!make_packet_func(command, message, message_ex, buff, &buff_len))
 		return 0;
 
 	return net_send_to(&addr, buff, buff_len);
@@ -163,17 +159,18 @@ int msg_send(const char* ip_addr, int command, const char *message, const char* 
 
 int msg_recv(struct msg_packet *packet)
 {
-	struct net_address addr;
 	char buff[MAX_UDPBUF];
 	int buff_len;
 
-	buff_len = net_recv_from(&addr, buff, MAX_UDPBUF);
+	if(packet == NULL || parse_packet_func == NULL)
+		return 0;
+
+	buff_len = net_recv_from(&packet->addr, buff, MAX_UDPBUF);
 	if(buff_len <= 0)
 		return 0;
 
 	buff[buff_len] = 0;
-	packet->host.addr = addr;
-	return parse_msg(buff, buff_len, packet);
+	return parse_packet_func(buff, buff_len, packet);
 }
 
 int broadcast(int command, const char* msg, const char* msg_ex)
@@ -189,21 +186,19 @@ int broadcast(int command, const char* msg, const char* msg_ex)
 	return 1;
 }
 
-int process_msg(struct msg_packet *packet)
+void msg_packet_handle( make_packet_handler make, parse_packet_handler parse )
 {
-	int i;
-	for (i=0; i<cmd_table_count; ++i)
-	{
-		if(cmd_table[i].cmd == (uint8)packet->command)
-		{
-			cmd_table[i].handle_func(packet);
-			return 1;
-		}
-	}
-	return 0;
+	make_packet_func = make;
+	parse_packet_func = parse;
 }
 
-void send_status(int command)
+
+const char* msg_local_user_name()
 {
-	broadcast(command | host_status(), cfg_nick_name(), cfg_group_name());
+	return local_user_name;
+}
+
+const char* msg_local_host_name()
+{
+	return local_host_name;
 }

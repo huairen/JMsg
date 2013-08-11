@@ -1,25 +1,51 @@
-#include "types.h"
 #include "ipmsg.h"
-#include "messages.h"
 #include "miscfunc.h"
+#include "config.h"
 
-extern struct host_info local_host;
+extern uint32 hashlittle(const void *key, size_t length, uint32 initval);
 
-void handle_user_entry(struct msg_packet *packet);
-void handle_answer_entry(struct msg_packet *packet);
-void handle_send_msg(struct msg_packet *packet);
+int handle_user_entry(struct msg_packet *packet);
+int handle_user_exit(struct msg_packet *packet);
+int handle_answer_entry(struct msg_packet *packet);
+int handle_send_msg(struct msg_packet *packet);
+int handle_recv_msg(struct msg_packet *packet);
 
-struct cmd_handle cmd_table[] = {
-	{IPMSG_BR_ENTRY, &handle_user_entry},
-	{IPMSG_ANSENTRY, &handle_answer_entry},
-	{IPMSG_SENDMSG, &handle_send_msg},
+struct cmd_handle {
+	uint32 command;
+	int (*handle_func)(struct msg_packet*);
 };
 
-const int cmd_table_count = sizeof(cmd_table) / sizeof(struct cmd_handle);
+static struct cmd_handle cmd_table[] = {
+	{IPMSG_BR_ENTRY, &handle_user_entry},
+	{IPMSG_BR_EXIT, &handle_user_exit},
+	{IPMSG_ANSENTRY, &handle_answer_entry},
+	{IPMSG_SENDMSG, &handle_send_msg},
+	{IPMSG_RECVMSG, &handle_recv_msg},
+};
+
+static const int cmd_table_count = sizeof(cmd_table) / sizeof(struct cmd_handle);
 
 static uint32 host_status()
 {
+	return 0;
+}
 
+void ipmsg_init()
+{
+	msg_init();
+	msg_packet_handle(make_msg, parse_msg);
+
+	broadcast_status(IPMSG_BR_ENTRY);
+}
+
+int process_msg(struct msg_packet *packet)
+{
+	int i;
+	for (i=0; i<cmd_table_count; ++i) {
+		if(cmd_table[i].command == GET_MODE(packet->command))
+			return cmd_table[i].handle_func(packet);
+	}
+	return 0;
 }
 
 //IPMSG的报文格式：版本号:包编号:发送者姓名:发送者主机名:命令字:附加信息
@@ -40,7 +66,10 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 	max_len = *buff_len;
 	packet_id = (int)time(NULL) + 1;
 	
-	packet_len = sprintf_s(buff, max_len, "%d:%u:%s:%s:%u:", IPMSG_VERSION, packet_id, local_host.user_name, local_host.host_name, command);
+	packet_len = sprintf_s(buff, max_len, "%d:%u:%s:%s:%u:",
+							IPMSG_VERSION, packet_id,
+							msg_local_user_name(), msg_local_host_name(),
+							command);
 
 	if(msg_ex)
 		ex_len = strlen(msg_ex);
@@ -101,8 +130,8 @@ int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
 
 	is_utf8 = (packet->command & IPMSG_UTF8OPT);
 
-	strcpy_s(packet->host.user_name, sizeof(packet->host.user_name), user_name);
-	strcpy_s(packet->host.host_name, sizeof(packet->host.host_name), host_name);
+	strcpy_s(packet->user_name, sizeof(packet->user_name), user_name);
+	strcpy_s(packet->host_name, sizeof(packet->host_name), host_name);
 
 	if((tok = separate_token(NULL, 0, &p)))
 	{
@@ -126,33 +155,20 @@ int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
 	return 1;
 }
 
-
-void handle_user_entry(struct msg_packet *packet)
+void broadcast_status( int status )
 {
-
+	broadcast(status | host_status(), cfg_nick_name(), cfg_group_name());
 }
 
-void handle_answer_entry(struct msg_packet *packet)
-{
-	struct user_info user;
-	memset(&user, 0, sizeof(user));
-	
-	user.host = packet->host;
-	if(packet->msg[0])
-		strcpy_s(user.nick_name,sizeof(user.nick_name), packet->msg);
-	if(packet->msg_ex[0])
-		strcpy_s(user.group_name,sizeof(user.group_name), packet->msg_ex);
 
-	user_add(&user);
+int get_local_user_id()
+{
+	const char *host_name = msg_local_host_name();
+	uint32 len = strlen(host_name);
+	return hashlittle(host_name, len, 0);
 }
 
-void handle_send_msg(struct msg_packet *packet)
+const char* get_local_user_name()
 {
-	char buff[64];
-	sprintf_s(buff, sizeof(buff), "%d", packet->time);
-
-	if ((packet->command & IPMSG_SENDCHECKOPT) &&
-		(packet->command & (IPMSG_BROADCASTOPT | IPMSG_AUTORETOPT)) == 0) {
-			msg_send(packet->host.addr.ip, IPMSG_RECVMSG, buff, NULL);
-	}
+	return *cfg_nick_name() ? cfg_nick_name() : msg_local_user_name();
 }

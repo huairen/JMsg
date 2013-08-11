@@ -1,44 +1,95 @@
 #include "user.h"
+#include "config.h"
+
+struct user_message_list {
+	struct user_message_list *next;
+	struct user_message data;
+};
+
+struct user_list {
+	struct user_info info;
+	uint32 last_read_time;
+	struct user_message_list *messages;
+	struct user_list* next;
+};
 
 static struct user_list *user_head = NULL;
 
-void user_add(struct user_info* user)
+static void user_message_free(struct user_list *user)
 {
-	struct user_list* new_node;
-	struct user_info* old_user;
+	struct user_message_list *next;
 
-	if (user == NULL)
-		return;
-
-	old_user = user_find_by_host(&user->host);
-	if(old_user) {
-		*old_user = *user;
-		return;
+	while(user->messages) {
+		next = user->messages->next;
+		free(user->messages->data.text);
+		free(user->messages);
+		user->messages = next;
 	}
-
-	new_node = (struct user_list*)malloc(sizeof(struct user_list));
-	new_node->info = *user;
-	new_node->next = user_head;
-	user_head = new_node;
 }
 
-void user_remove( struct user_info* user )
+static void user_list_free(struct user_list *user)
+{
+	user_message_free(user);
+	free(user);
+}
+
+static struct user_list* user_list_find(uint32 id)
+{
+	struct user_list *user_ptr = user_head;
+	while (user_ptr) {
+		if (user_ptr->info.id == id)
+			return user_ptr;
+		user_ptr = user_ptr->next;
+	}
+	return NULL;
+}
+
+struct user_info* user_add(uint32 user_id)
+{
+	struct user_list* new_user;
+
+	new_user = user_list_find(user_id);
+	if(new_user == NULL) {
+		new_user = (struct user_list*)malloc(sizeof(struct user_list));
+		memset(new_user, 0, sizeof(struct user_list));
+
+		new_user->info.id = user_id;
+		new_user->next = user_head;
+		user_head = new_user;
+	}
+
+	return &new_user->info;
+}
+
+struct user_info* user_find( uint32 user_id )
+{
+	struct user_list* find_user = user_list_find(user_id);
+	if(find_user == NULL)
+		return NULL;
+	return &find_user->info;
+}
+
+
+void user_remove(uint32 user_id)
 {
 	struct user_list *prev_ptr, *user_ptr = user_head;
 
 	prev_ptr = NULL;
-	while(user_ptr && !user_is_same(&user_ptr->info.host, &user->host))
+	while(user_ptr && (user_ptr->info.id != user_id))
 	{
 		prev_ptr = user_ptr;
 		user_ptr = user_ptr->next;
 	}
+
+	if(user_ptr == NULL)
+		return;
 
 	if(prev_ptr != NULL)
 		prev_ptr->next = user_ptr->next;
 	else
 		user_head = user_ptr->next;
 
-	free(user_ptr);
+	user_list_free(user_ptr);
 }
 
 void user_clear()
@@ -48,67 +99,111 @@ void user_clear()
 	{
 		user_ptr = user_head;
 		user_head = user_head->next;
-		free(user_ptr);
+		user_list_free(user_ptr);
 	}
 }
 
-struct user_info* user_find_by_host( struct host_info *host )
+const char* user_show_name( uint32 user_id )
 {
-	struct user_list *user_ptr = user_head;
+	struct user_list* find_user = user_list_find(user_id);
+	if(find_user == NULL)
+		return NULL;
+	
+	if(find_user->info.alter_name[0])
+		return find_user->info.alter_name;
 
-	while (user_ptr) {
-		if (user_is_same(host, &(user_ptr->info.host)))
-			return &user_ptr->info;
-		user_ptr = user_ptr->next;
-	}
+	if(find_user->info.nick_name[0])
+		return find_user->info.nick_name;
+
 	return NULL;
 }
 
-struct user_info* user_find_by_index(int index)
+//user message
+void user_push_msg( uint32 user_id, uint32 id, uint32 time, const char *text )
 {
-	int i;
-	struct user_list *user_ptr = user_head;
+	struct user_message_list *msg;
+	struct user_list* find_user;
 
-	for(i=0; i<index && user_ptr; user_ptr = user_ptr->next, ++i);
+	find_user = user_list_find(id);
+	if(find_user == NULL)
+		return;
+	
+	msg = (struct user_message_list*)malloc(sizeof(struct user_message_list));
+	if(msg == NULL)
+		return;
 
-	return &user_ptr->info;
+	msg->data.time = time;
+	msg->data.text = strdup(text);
+	msg->next = find_user->messages;
+	find_user->messages = msg;
 }
 
-const char* user_show_name( struct user_info *user )
+uint32 user_unrend_count( uint32 user_id )
 {
-	if(user == NULL)
-		return NULL;
+	struct user_list *find_user;
+	struct user_message_list *msg_ptr;
+	int count = 0;
 
-	if(user->alter_name[0])
-		return user->alter_name;
+	find_user = user_list_find(user_id);
+	if(find_user == NULL)
+		return 0;
 
-	if(user->nick_name[0])
-		return user->nick_name;
+	msg_ptr = find_user->messages;
+	while(msg_ptr) {
+		if(msg_ptr->data.time <= find_user->last_read_time)
+			break;
 
-	return user->host.host_name;
-}
-
-int user_is_same( struct host_info *host1, struct host_info *host2 )
-{
-	if (_stricmp(host1->host_name, host2->host_name))
-		return	0;
-
-	return	_stricmp(host1->user_name, host2->user_name) ? 0 : 1;
-}
-
-
-void user_list_dump()
-{
-	int i = 1;
-	struct user_list *user_ptr = user_head;
-	const char *name;
-
-	while(user_ptr) {
-		name = user_ptr->info.nick_name;
-		printf("%2d. %-20s %-20s %s\n", i++,
-			*name ? name : user_ptr->info.host.user_name,
-			user_ptr->info.host.host_name,
-			user_ptr->info.host.addr.ip);
-		user_ptr = user_ptr->next;
+		++count;
+		msg_ptr = msg_ptr->next;
 	}
+
+	return count;
+}
+
+struct user_message* user_unread_msg( uint32 user_id )
+{
+	struct user_list *find_user;
+	struct user_message_list *msg_ptr, *prev_msg = NULL;
+
+	find_user = user_list_find(user_id);
+	if(find_user == NULL)
+		return 0;
+
+	msg_ptr = find_user->messages;
+	while(msg_ptr) {
+		if(msg_ptr->data.time <= find_user->last_read_time)
+			break;
+
+		prev_msg = msg_ptr;
+		msg_ptr = msg_ptr->next;
+	}
+	
+	if(prev_msg)
+		find_user->last_read_time = prev_msg->data.time;
+
+	return &prev_msg->data;
+}
+
+struct user_message* user_read_msg( uint32 user_id, int index )
+{
+	struct user_list *find_user;
+	struct user_message_list *msg_ptr;
+	int count = 0;
+
+	find_user = user_list_find(user_id);
+	if(find_user == NULL)
+		return 0;
+
+	msg_ptr = find_user->messages;
+	while(msg_ptr) {
+		if(msg_ptr->data.time > find_user->last_read_time)
+			continue;
+
+		if(index-- <= 0)
+			return &msg_ptr->data;
+
+		msg_ptr = msg_ptr->next;
+	}
+
+	return NULL;
 }

@@ -1,30 +1,13 @@
-#ifndef MESSAGES_H_
-#define MESSAGES_H_
+#ifndef MISCFUNC_H_
+#define MISCFUNC_H_
 
-#include "user.h"
+#include "types.h"
 
-struct msg_packet {
-	struct host_info host;
-	int version;
-	int time;
-	int command;
-	char msg[MAX_UDPBUF];
-	char msg_ex[MAX_UDPBUF];
-};
-
-struct cmd_handle {
-	uint8 cmd;
-	void (*handle_func)(struct msg_packet*);
-};
-
-int msg_init();
-int msg_send(const char* ip_addr, int command, const char *message, const char* message_ex);
-int msg_recv(struct msg_packet *packet);
-int broadcast(int command, const char* msg, const char* msg_ex);
-int process_msg(struct msg_packet *packet);
-
-void send_status(int command);
-
-extern struct host_info local_host;
+char *separate_token(char *buf, char separetor, char **handle);
+int local_to_unix(const char *src, char *dest, int dest_len);
+int unix_to_local(const char *src, char *dest, int dest_len);
+char* w_to_a(const WCHAR* src);
+WCHAR* u8_to_w(const char* src);
+char* u8_to_a(const char* src);
 
 #endif
