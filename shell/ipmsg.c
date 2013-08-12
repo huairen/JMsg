@@ -2,7 +2,7 @@
 #include "miscfunc.h"
 #include "config.h"
 
-extern uint32 hashlittle(const void *key, size_t length, uint32 initval);
+extern uint32_t hashlittle(const void *key, size_t length, uint32_t initval);
 
 int handle_user_entry(struct msg_packet *packet);
 int handle_user_exit(struct msg_packet *packet);
@@ -11,7 +11,7 @@ int handle_send_msg(struct msg_packet *packet);
 int handle_recv_msg(struct msg_packet *packet);
 
 struct cmd_handle {
-	uint32 command;
+	uint32_t command;
 	int (*handle_func)(struct msg_packet*);
 };
 
@@ -25,31 +25,13 @@ static struct cmd_handle cmd_table[] = {
 
 static const int cmd_table_count = sizeof(cmd_table) / sizeof(struct cmd_handle);
 
-static uint32 host_status()
+static uint32_t host_status()
 {
-	return 0;
-}
-
-void ipmsg_init()
-{
-	msg_init();
-	msg_packet_handle(make_msg, parse_msg);
-
-	broadcast_status(IPMSG_BR_ENTRY);
-}
-
-int process_msg(struct msg_packet *packet)
-{
-	int i;
-	for (i=0; i<cmd_table_count; ++i) {
-		if(cmd_table[i].command == GET_MODE(packet->command))
-			return cmd_table[i].handle_func(packet);
-	}
 	return 0;
 }
 
 //IPMSG的报文格式：版本号:包编号:发送者姓名:发送者主机名:命令字:附加信息
-int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *buff_len)
+static int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *buff_len)
 {
 	int packet_len;
 	int packet_id;
@@ -57,19 +39,19 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 	int ex_len = 0;
 	int cmd = GET_MODE(command);
 	int is_br_cmd = cmd == IPMSG_BR_ENTRY ||
-					cmd == IPMSG_BR_EXIT ||
-					cmd == IPMSG_BR_ABSENCE;
+		cmd == IPMSG_BR_EXIT ||
+		cmd == IPMSG_BR_ABSENCE;
 
 	if(buff_len == 0)
 		return 0;
 
 	max_len = *buff_len;
 	packet_id = (int)time(NULL) + 1;
-	
+
 	packet_len = sprintf_s(buff, max_len, "%d:%u:%s:%s:%u:",
-							IPMSG_VERSION, packet_id,
-							msg_local_user_name(), msg_local_host_name(),
-							command);
+		IPMSG_VERSION, packet_id,
+		msg_local_user_name(), msg_local_host_name(),
+		command);
 
 	if(msg_ex)
 		ex_len = strlen(msg_ex);
@@ -78,10 +60,10 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 		ex_len = 0;
 	max_len -= ex_len;
 
-	if(msg) {
+	if(msg && msg[0]) {
 		packet_len += local_to_unix(msg, buff + packet_len, max_len - packet_len);
 	}
-	
+
 	packet_len++;
 	if(ex_len) {
 		memcpy(buff + packet_len, msg_ex, ex_len);
@@ -92,7 +74,7 @@ int make_msg(int command, const char *msg, const char *msg_ex, char *buff, int *
 	return 1;
 }
 
-int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
+static int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
 {
 	char *ex_str = NULL, *tok, *p;
 	char *user_name, *host_name;
@@ -155,20 +137,39 @@ int parse_msg(char *buff, int buff_len, struct msg_packet *packet)
 	return 1;
 }
 
+void ipmsg_init()
+{
+	msg_init();
+	msg_packet_handle(make_msg, parse_msg);
+
+	broadcast_status(IPMSG_BR_ENTRY);
+}
+
+int process_msg(struct msg_packet *packet)
+{
+	int i;
+	for (i=0; i<cmd_table_count; ++i) {
+		if(cmd_table[i].command == GET_MODE(packet->command))
+			return cmd_table[i].handle_func(packet);
+	}
+	return 0;
+}
+
+
 void broadcast_status( int status )
 {
-	broadcast(status | host_status(), cfg_nick_name(), cfg_group_name());
+	broadcast(status | host_status(), get_nick_name(), cfg_group_name());
 }
 
 
 int get_local_user_id()
 {
 	const char *host_name = msg_local_host_name();
-	uint32 len = strlen(host_name);
+	uint32_t len = strlen(host_name);
 	return hashlittle(host_name, len, 0);
 }
 
-const char* get_local_user_name()
+const char* get_nick_name()
 {
 	return *cfg_nick_name() ? cfg_nick_name() : msg_local_user_name();
 }

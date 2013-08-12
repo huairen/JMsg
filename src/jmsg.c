@@ -101,7 +101,7 @@ int msg_init()
     //get hostname and username
 #ifdef _WIN32
 	{
-        uint32 name_len = sizeof(local_host_name);
+        uint32_t name_len = sizeof(local_host_name);
         if(!GetComputerName(local_host_name, &name_len))
             return 0;
 

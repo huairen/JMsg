@@ -8,7 +8,7 @@ struct user_message_list {
 
 struct user_list {
 	struct user_info info;
-	uint32 last_read_time;
+	uint32_t last_read_time;
 	struct user_message_list *messages;
 	struct user_list* next;
 };
@@ -33,7 +33,7 @@ static void user_list_free(struct user_list *user)
 	free(user);
 }
 
-static struct user_list* user_list_find(uint32 id)
+static struct user_list* user_list_find(uint32_t id)
 {
 	struct user_list *user_ptr = user_head;
 	while (user_ptr) {
@@ -44,7 +44,7 @@ static struct user_list* user_list_find(uint32 id)
 	return NULL;
 }
 
-struct user_info* user_add(uint32 user_id)
+struct user_info* user_add(uint32_t user_id)
 {
 	struct user_list* new_user;
 
@@ -61,7 +61,7 @@ struct user_info* user_add(uint32 user_id)
 	return &new_user->info;
 }
 
-struct user_info* user_find( uint32 user_id )
+struct user_info* user_find( uint32_t user_id )
 {
 	struct user_list* find_user = user_list_find(user_id);
 	if(find_user == NULL)
@@ -69,8 +69,30 @@ struct user_info* user_find( uint32 user_id )
 	return &find_user->info;
 }
 
+struct user_info* user_find_by_index( uint32_t index )
+{
+	struct user_list *user_ptr = user_head;
+	while (user_ptr) {
+		if (index-- == 0)
+			return &user_ptr->info;
+		user_ptr = user_ptr->next;
+	}
+	return NULL;
+}
 
-void user_remove(uint32 user_id)
+struct user_info* user_find_first()
+{
+	return &user_head->info;
+}
+
+struct user_info* user_find_next( struct user_info* user )
+{
+	struct user_list *user_node = (struct user_list*)user;
+	user_node = user_node->next;
+	return &user_node->info;
+}
+
+void user_remove(uint32_t user_id)
 {
 	struct user_list *prev_ptr, *user_ptr = user_head;
 
@@ -103,7 +125,7 @@ void user_clear()
 	}
 }
 
-const char* user_show_name( uint32 user_id )
+const char* user_show_name( uint32_t user_id )
 {
 	struct user_list* find_user = user_list_find(user_id);
 	if(find_user == NULL)
@@ -119,7 +141,7 @@ const char* user_show_name( uint32 user_id )
 }
 
 //user message
-void user_push_msg( uint32 user_id, uint32 id, uint32 time, const char *text )
+void user_push_msg( uint32_t user_id, uint32_t id, uint32_t time, const char *text )
 {
 	struct user_message_list *msg;
 	struct user_list* find_user;
@@ -132,13 +154,14 @@ void user_push_msg( uint32 user_id, uint32 id, uint32 time, const char *text )
 	if(msg == NULL)
 		return;
 
+	msg->data.id = id;
 	msg->data.time = time;
 	msg->data.text = strdup(text);
 	msg->next = find_user->messages;
 	find_user->messages = msg;
 }
 
-uint32 user_unrend_count( uint32 user_id )
+uint32_t user_unrend_count( uint32_t user_id )
 {
 	struct user_list *find_user;
 	struct user_message_list *msg_ptr;
@@ -160,7 +183,7 @@ uint32 user_unrend_count( uint32 user_id )
 	return count;
 }
 
-struct user_message* user_unread_msg( uint32 user_id )
+struct user_message* user_unread_msg( uint32_t user_id )
 {
 	struct user_list *find_user;
 	struct user_message_list *msg_ptr, *prev_msg = NULL;
@@ -178,13 +201,14 @@ struct user_message* user_unread_msg( uint32 user_id )
 		msg_ptr = msg_ptr->next;
 	}
 	
-	if(prev_msg)
-		find_user->last_read_time = prev_msg->data.time;
+	if(prev_msg == NULL)
+		return NULL;
 
+	find_user->last_read_time = prev_msg->data.time;
 	return &prev_msg->data;
 }
 
-struct user_message* user_read_msg( uint32 user_id, int index )
+struct user_message* user_read_msg( uint32_t user_id, int index )
 {
 	struct user_list *find_user;
 	struct user_message_list *msg_ptr;

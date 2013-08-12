@@ -8,6 +8,12 @@
 
 #define MAX_CHAT_NUM 10
 
+enum shell_status{
+	SHELL_STATUS_NULL,
+	SHELL_STATUS_LIST,
+	SHELL_STATUS_TALK,
+};
+
 struct shell_handle {
 	char type[16];
 	int type_len;
@@ -28,8 +34,9 @@ static const struct shell_handle table[] = {
 
 static const int table_count = sizeof(table) / sizeof(struct shell_handle);
 
-static uint32 chat_user[MAX_CHAT_NUM] = {0};
+static uint32_t chat_user[MAX_CHAT_NUM] = {0};
 static int is_read_history = 0;
+static enum shell_status curr_status = SHELL_STATUS_NULL;
 
 static void _show_chat_list()
 {
@@ -37,6 +44,9 @@ static void _show_chat_list()
 	int line = console_current_line();
 	if(line == 0)
 		++line;
+
+	if(curr_status != SHELL_STATUS_TALK || chat_user[0] == 0)
+		return;
 
 	console_clear_line(0);
 	printf("# talk with %s  ", user_show_name(chat_user[0]));
@@ -59,11 +69,11 @@ static void _show_chat_msg()
 	int i;
 	struct user_message* his_ptr;
 
-	if(chat_user[0] == 0)
+	if(chat_user[0] == 0 || curr_status != SHELL_STATUS_TALK)
 		return;
 
 	if(is_read_history) {
-		for (i = 3; i >= 0; --i) {
+		for (i = 2; i >= 0; --i) {
 			his_ptr = user_read_msg(chat_user[0], i);
 			if(his_ptr)
 				printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
@@ -77,7 +87,7 @@ static void _show_chat_msg()
 	}
 }
 
-static void _push_user(uint32 user_id)
+static void _push_user(uint32_t user_id)
 {
 	int i;
 	for (i = 0; i < MAX_CHAT_NUM; ++i) {
@@ -93,7 +103,7 @@ static void _push_user(uint32 user_id)
 	_show_chat_list();
 }
 
-static void _talk_with_user(uint32 user_id)
+static void _talk_with_user(uint32_t user_id)
 {
 	int i;
 	for (i = MAX_CHAT_NUM - 1; i > 0; --i)
@@ -102,21 +112,22 @@ static void _talk_with_user(uint32 user_id)
 	chat_user[0] = user_id;
 }
 
-static void _talk_with_index(int index)
+static int _talk_with_index(int index)
 {
-	uint32 user_id;
+	uint32_t user_id;
 	
 	if(index < 0 || index >= MAX_CHAT_NUM)
-		return;
+		return 0;
 
 	user_id = chat_user[index];
 	if(user_id == 0)
-		return;
+		return 0;
 
 	for (; index > 0; --index)
 		chat_user[index] = chat_user[index-1];
 
 	chat_user[0] = user_id;
+	return 1;
 }
 
 
@@ -151,22 +162,22 @@ void shell_self_say( const char* text )
 	user_push_msg(chat_user[0], get_local_user_id(), (int)time(NULL), text);
 
 	console_set_text_color(FOREGROUND_RED);
-	printf("%s: %s\n", get_local_user_name(), text);
+	printf("%s: %s\n", get_nick_name(), text);
 	console_set_text_color(0xffff);
 }
 
-void shell_recv_msg(uint32 user_id)
+void shell_recv_msg(uint32_t user_id)
 {
-	if(chat_user[0] == 0)
-		return;
-
 	if(user_id != chat_user[0])
 		_push_user(user_id);
 
-	_show_chat_msg();
+	if(curr_status == SHELL_STATUS_TALK)
+		_show_chat_msg();
+	else
+		printf("Tip: new message! \"-talk\" recv.\n");
 }
 
-void shell_user_exit(uint32 user_id)
+void shell_user_exit(uint32_t user_id)
 {
 	int i;
 	for (i = 0; i < MAX_CHAT_NUM; ++i) {
@@ -199,31 +210,48 @@ void handle_refresh(const char* arg)
 
 void handle_list(const char* arg)
 {
+	int i = 0;
+	struct user_info *user;
+
 	memset(chat_user, 0, sizeof(chat_user));
 	console_clear();
+	curr_status = SHELL_STATUS_LIST;
+
+	printf("±àºÅ.%-18s %-10s %-16s\n", "Ãû×Ö", "×é", "IP");
+	printf("---------------------------------------------------\n");
+	
+	user = user_find_first();
+	while(user) {
+		printf("%4d.%-18s %-10s %-16s\n", i, user_show_name(user->id), user->group_name, user->addr.ip);
+		user = user_find_next(user);
+		i++;
+	}
 }
 
 void handle_talk(const char* arg)
 {
 	int index;
 
-	if(arg == NULL || arg[0] == 0)
-		return;
-	
-	console_clear();
+	if(arg != NULL && arg[0] != 0)	
+	{
+		index = atoi(arg);
 
-	index = atoi(arg);
-	if(chat_user[0]) {
-		if(index == 0)
-			return;
+		if(curr_status == SHELL_STATUS_LIST) {
+			struct user_info *user = user_find_by_index(index);
+			if(user == NULL || user->id == chat_user[0])
+				return;
 
-		_talk_with_index(index);
-		is_read_history = 1;
-	} else {
-		if(index != chat_user[0])
-			_talk_with_user(index);
+			_talk_with_user(user->id);
+		} else {
+			if(index == 0 || !_talk_with_index(index))
+				return;
+
+			is_read_history = 1;
+		}
 	}
 	
+	curr_status = SHELL_STATUS_TALK;
+	console_clear();
 	_show_chat_list();
 	_show_chat_msg();
 }

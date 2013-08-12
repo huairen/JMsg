@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #ifdef _WIN32
 #include <WinSock2.h>
@@ -21,9 +22,5 @@
 #define sprintf_s snprintf
 
 #endif
-
-typedef unsigned int uint32;
-typedef unsigned short uint16;
-typedef unsigned char uint8;
 
 #endif

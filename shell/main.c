@@ -13,22 +13,23 @@ char buff[1024] = {0};
 
 void recv_func(void* arg)
 {
+	uint32_t user_id;
 	struct msg_packet msg;
 	while(1)
 	{
 		msg_recv(&msg);
-		process_msg(&msg);
+		user_id = process_msg(&msg);
 
 		switch (GET_MODE(msg.command))
 		{
 		case IPMSG_SENDMSG:
 			console_clear_line(-1);
-// 			shell_recv_msg(&msg.host);
+ 			shell_recv_msg(user_id);
 			printf("%s", buff);
 			break;
 
 		case IPMSG_BR_EXIT:
-// 			shell_user_exit(&msg.host);
+ 			shell_user_exit(user_id);
 			break;
 		}
 	}
@@ -83,12 +84,22 @@ int main(int argc, char* argv[])
 		{
 			console_clear_line(-1);
 
-			if(buff[0] == '-' && shell_parse_cmd(buff+1))
+			if(buff[0] == '-')
+			{
+				if(stricmp(buff+1, "exit") == 0)
+				{
+					broadcast_status(IPMSG_BR_EXIT);
+					break;
+				}
+
+				shell_parse_cmd(buff+1);
 				continue;
+			}
 
 			shell_self_say(buff);
 		}
 	}
 
+	user_clear();
 	return 0;
 }
