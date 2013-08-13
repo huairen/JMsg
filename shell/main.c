@@ -28,8 +28,14 @@ void recv_func(void* arg)
 			printf("%s", buff);
 			break;
 
+		case IPMSG_ANSENTRY:
+		case IPMSG_BR_ENTRY:
+			shell_user_entry(user_id);
+
 		case IPMSG_BR_EXIT:
- 			shell_user_exit(user_id);
+			console_clear_line(-1);
+			shell_user_exit(user_id, msg.msg);
+			printf("%s", buff);
 			break;
 		}
 	}
@@ -38,8 +44,11 @@ void recv_func(void* arg)
 int main(int argc, char* argv[])
 {
 	char c;
+	int is_wchar = 0;
 
 	ipmsg_init();
+	shell_parse_cmd("list");
+
  	_beginthread(recv_func,0,0);
 
 	while(1)
@@ -50,12 +59,15 @@ int main(int argc, char* argv[])
 		fflush(stdout);
 		while((c = getch()) != '\r')
 		{
+			if(!is_wchar) {
+				if(c == 0 || c == -32) {
+					getch();
+					continue;
+				}
+			}
+
 			switch(c)
 			{
-			case 0:
-			case -32:
-				getch();
-				break;
 			case '\b':
 				{
 					if(buff_pos == 0)
@@ -75,6 +87,9 @@ int main(int argc, char* argv[])
 				{
 					buff[buff_pos++] = c;
 					printf("%c",c);
+
+					if(!isascii(c))
+						is_wchar = !is_wchar;
 				}
 				break;
 			}

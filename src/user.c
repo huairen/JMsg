@@ -146,7 +146,7 @@ void user_push_msg( uint32_t user_id, uint32_t id, uint32_t time, const char *te
 	struct user_message_list *msg;
 	struct user_list* find_user;
 
-	find_user = user_list_find(id);
+	find_user = user_list_find(user_id);
 	if(find_user == NULL)
 		return;
 	
@@ -220,11 +220,10 @@ struct user_message* user_read_msg( uint32_t user_id, int index )
 
 	msg_ptr = find_user->messages;
 	while(msg_ptr) {
-		if(msg_ptr->data.time > find_user->last_read_time)
-			continue;
-
-		if(index-- <= 0)
-			return &msg_ptr->data;
+		if(msg_ptr->data.time <= find_user->last_read_time) {
+			if(index-- <= 0)
+				return &msg_ptr->data;
+		}
 
 		msg_ptr = msg_ptr->next;
 	}

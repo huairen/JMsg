@@ -142,6 +142,8 @@ void ipmsg_init()
 	msg_init();
 	msg_packet_handle(make_msg, parse_msg);
 
+	cfg_load("jmsg.conf");
+
 	broadcast_status(IPMSG_BR_ENTRY);
 }
 

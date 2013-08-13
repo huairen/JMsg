@@ -5,6 +5,7 @@
 *.pdb
 *.ncb
 *.opensdf
+*.aps
 Debug
 Release
 .DS_Store

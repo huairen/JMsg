@@ -30,6 +30,8 @@ static const struct shell_handle table[] = {
 	{"refresh", 7, &handle_refresh},
 	{"list", 4, &handle_list},
 	{"talk", 4, &handle_talk},
+	{"l", 1, &handle_list},
+	{"t", 1, &handle_talk},
 };
 
 static const int table_count = sizeof(table) / sizeof(struct shell_handle);
@@ -67,6 +69,7 @@ static void _show_chat_list()
 static void _show_chat_msg()
 {
 	int i;
+	uint32_t self_id = get_local_user_id();
 	struct user_message* his_ptr;
 
 	if(chat_user[0] == 0 || curr_status != SHELL_STATUS_TALK)
@@ -75,14 +78,32 @@ static void _show_chat_msg()
 	if(is_read_history) {
 		for (i = 2; i >= 0; --i) {
 			his_ptr = user_read_msg(chat_user[0], i);
-			if(his_ptr)
-				printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+			if(his_ptr != NULL)
+			{
+				if(self_id == his_ptr->id) {
+					console_set_text_color(FOREGROUND_RED);
+					printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+					console_set_text_color(0xffff);
+				}
+				else
+					printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+			}
 		}
+		is_read_history = 0;
+		printf("----------------history------------------\n");
 	}
 
 	his_ptr = user_unread_msg(chat_user[0]);
 	while(his_ptr) {
-		printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+
+		if(self_id == his_ptr->id) {
+			console_set_text_color(FOREGROUND_RED);
+			printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+			console_set_text_color(0xffff);
+		}
+		else
+			printf("%s: %s\n", user_show_name(his_ptr->id), his_ptr->text);
+
 		his_ptr = user_unread_msg(chat_user[0]);
 	}
 }
@@ -130,6 +151,43 @@ static int _talk_with_index(int index)
 	return 1;
 }
 
+static HWND GetConsoleHwnd(void)
+{
+#define MY_BUFSIZE 1024 // Buffer size for console window titles.
+	HWND hwndFound;         // This is what is returned to the caller.
+	char pszNewWindowTitle[MY_BUFSIZE]; // Contains fabricated
+	// WindowTitle.
+	char pszOldWindowTitle[MY_BUFSIZE]; // Contains original
+	// WindowTitle.
+
+	// Fetch current window title.
+
+	GetConsoleTitle(pszOldWindowTitle, MY_BUFSIZE);
+
+	// Format a "unique" NewWindowTitle.
+
+	wsprintf(pszNewWindowTitle,"%d/%d",
+		GetTickCount(),
+		GetCurrentProcessId());
+
+	// Change current window title.
+
+	SetConsoleTitle(pszNewWindowTitle);
+
+	// Ensure window title has been updated.
+
+	Sleep(40);
+
+	// Look for NewWindowTitle.
+
+	hwndFound = FindWindow(NULL, pszNewWindowTitle);
+
+	// Restore original window title.
+
+	SetConsoleTitle(pszOldWindowTitle);
+
+	return(hwndFound);
+}
 
 //----------------------------------------------------------------
 int shell_parse_cmd(const char* cmd)
@@ -151,8 +209,10 @@ void shell_self_say( const char* text )
 {
 	struct user_info *user;
 
-	if(chat_user[0] == 0)
+	if(chat_user[0] == 0) {
+		printf("the user is exit!\n");
 		return;
+	}
 
 	user = user_find(chat_user[0]);
 	if(user == NULL)
@@ -160,6 +220,7 @@ void shell_self_say( const char* text )
 	
 	msg_send(user->addr.ip,IPMSG_SENDMSG,text,NULL);
 	user_push_msg(chat_user[0], get_local_user_id(), (int)time(NULL), text);
+	user_unread_msg(chat_user[0]);
 
 	console_set_text_color(FOREGROUND_RED);
 	printf("%s: %s\n", get_nick_name(), text);
@@ -175,9 +236,17 @@ void shell_recv_msg(uint32_t user_id)
 		_show_chat_msg();
 	else
 		printf("Tip: new message! \"-talk\" recv.\n");
+	
+	FlashWindow(GetConsoleHwnd(), TRUE);
 }
 
-void shell_user_exit(uint32_t user_id)
+void shell_user_entry( uint32_t user_id )
+{
+	if(curr_status == SHELL_STATUS_LIST)
+		handle_list(NULL);
+}
+
+void shell_user_exit(uint32_t user_id, const char* name)
 {
 	int i;
 	for (i = 0; i < MAX_CHAT_NUM; ++i) {
@@ -191,7 +260,8 @@ void shell_user_exit(uint32_t user_id)
 		chat_user[i] = chat_user[i + 1];
 	}
 
-	_show_chat_list();
+	if(curr_status == SHELL_STATUS_LIST)
+		handle_list(NULL);
 }
 
 
