@@ -1,10 +1,10 @@
-#include "shell.h"
+#include "shell.hxx"
 #include <string.h>
-#include "user.h"
-#include "console.h"
-#include "ipmsg.h"
-#include "config.h"
-#include "jmsg.h"
+#include "user.hxx"
+#include "console.hxx"
+#include "ipmsg.hxx"
+#include "config.hxx"
+#include "jmsg.hxx"
 
 #define MAX_CHAT_NUM 10
 

@@ -1,5 +1,5 @@
-#include "ipmsg.h"
-#include "config.h"
+#include "ipmsg.hxx"
+#include "config.hxx"
 
 extern uint32_t hashlittle(const void *key, size_t length, uint32_t initval);
 

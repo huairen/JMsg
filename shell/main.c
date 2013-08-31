@@ -2,10 +2,10 @@
 #include <conio.h>
 #include <string.h>
 #include <process.h>
-#include "ipmsg.h"
-#include "ipmsg_cmd.h"
-#include "console.h"
-#include "shell.h"
+#include "ipmsg.hxx"
+#include "ipmsg_cmd.hxx"
+#include "console.hxx"
+#include "shell.hxx"
 
 #define getch _getch
 

@@ -1,0 +1,43 @@
+frame(main)
+	size = 224,530
+	minSize = 224,330
+	maxSize = 324,900
+	image = .\JMsg_globalUI_bg.bmp
+	
+	new button(logo)
+		position = 8,1
+		size = 23,21
+		horizAlign = left
+		normalImage = .\JMsg_globalUI_logo_n.png
+		highlightImage = .\JMsg_globalUI_logo_o.png
+		pressImage = .\JMsg_globalUI_logo_d.png
+	end
+
+	new button(set)
+		position = 142,0
+		size = 21,23
+		horizAlign = right
+	#	imageScale = true
+		normalImage = .\JMsg_globalUI_set_n.png
+		highlightImage = .\JMsg_globalUI_set_o.png
+		pressImage = .\JMsg_globalUI_set_d.png
+	end
+	
+	new button(min)
+		position = 172,0
+		size = 21,23
+		horizAlign = right
+		normalImage = .\JMsg_globalUI_min_n.png
+		highlightImage = .\JMsg_globalUI_min_o.png
+		pressImage = .\JMsg_globalUI_min_d.png
+	end
+	
+	new button(close)
+		position = 196,0
+		size = 21,23
+		horizAlign = right
+		normalImage = .\JMsg_globalUI_x_n.png
+		highlightImage = .\JMsg_globalUI_x_o.png
+		pressImage = .\JMsg_globalUI_x_d.png
+	end
+end

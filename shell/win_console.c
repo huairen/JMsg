@@ -1,4 +1,4 @@
-#include "console.h"
+#include "console.hxx"
 #include <Windows.h>
 
 void console_clear_colors(int ForgC, int BackC)

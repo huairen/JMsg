@@ -1,6 +1,6 @@
-#include "jmsg.h"
-#include "network.h"
-#include "config.h"
+#include "jmsg.hxx"
+#include "network.hxx"
+#include "config.hxx"
 
 struct broadcast_list{
 	char ip[MAX_IP_LEN];

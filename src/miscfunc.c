@@ -1,4 +1,4 @@
-#include "miscfunc.h"
+#include "miscfunc.hxx"
 
 char *separate_token(char *buf, char separetor, char **handle)
 {
