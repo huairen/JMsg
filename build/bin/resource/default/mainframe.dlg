@@ -68,4 +68,10 @@ frame
 		pressImage = ./tabbar_pushed.png
 		end
 	end
+	
+	new scroll
+		position = 1,56
+		size = 278,544
+		image = ./scrollbar.png
+	end
 end
