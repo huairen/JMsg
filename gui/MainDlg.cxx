@@ -1,7 +1,7 @@
 #include "MainDlg.hxx"
 #include "graphics/gdi/JGdiRender.hxx"
 #include "core/script/JuiCreater.hxx"
-#include "resource.hxx"
+#include "../build/vc110/JMsg/resource.hxx"
 
 JGdiRender g_GdiRender;
 
