@@ -20,6 +20,10 @@ struct msg_packet {
 	struct net_address addr;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int msg_init();
 int msg_send(const char* ip_addr, int command, const char *message, const char* message_ex);
 int msg_recv(struct msg_packet *packet);
@@ -29,5 +33,9 @@ int broadcast(int command, const char* msg, const char* msg_ex);
 void msg_packet_handle(make_packet_handler make, parse_packet_handler parse);
 const char* msg_local_user_name();
 const char* msg_local_host_name();
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

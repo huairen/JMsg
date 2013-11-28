@@ -10,16 +10,34 @@
     <ClCompile Include="..\..\..\gui\ChatDlg.cxx">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c">
+      <Filter>源文件\ipmsg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg_cmd.c">
+      <Filter>源文件\ipmsg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\gui\ipmsg\lookup3.c">
+      <Filter>源文件\ipmsg</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\gui\ChatDlg.hxx">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="resource.hxx">
+      <Filter>资源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.hxx">
+      <Filter>头文件\ipmsg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.hxx">
+      <Filter>头文件\ipmsg</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\..\gui\MainDlg.hxx">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.hxx">
-      <Filter>资源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +52,12 @@
     <Filter Include="资源文件">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="头文件\ipmsg">
+      <UniqueIdentifier>{304aa38f-7567-4482-baca-39b206ad83be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\ipmsg">
+      <UniqueIdentifier>{8c87852d-88f2-41e4-9c02-03fac1dd5201}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

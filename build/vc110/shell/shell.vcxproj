@@ -24,13 +24,6 @@
     <ClInclude Include="..\..\..\shell\ipmsg.hxx" />
     <ClInclude Include="..\..\..\shell\ipmsg_cmd.hxx" />
     <ClInclude Include="..\..\..\shell\shell.hxx" />
-    <ClInclude Include="resource.hxx" />
-  </ItemGroup>
-  <ItemGroup>
-    <ResourceCompile Include="shell.rc" />
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="JMsg.ico" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{381FDE7C-313A-4104-87E8-795A1AE3971F}</ProjectGuid>

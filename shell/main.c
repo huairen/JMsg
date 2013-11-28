@@ -101,7 +101,7 @@ int main(int argc, char* argv[])
 
 			if(buff[0] == '-')
 			{
-				if(stricmp(buff+1, "exit") == 0)
+				if(_stricmp(buff+1, "exit") == 0)
 				{
 					broadcast_status(IPMSG_BR_EXIT);
 					break;

@@ -28,6 +28,9 @@ struct net_device {
 	struct net_device* next;
 };
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 int net_init();
 void net_shutdown();
@@ -50,5 +53,9 @@ int net_set_block(int socket, int block);
 struct net_device* net_device_list();
 void net_device_list_free(struct net_device *list);
 
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

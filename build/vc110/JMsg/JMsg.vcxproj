@@ -12,19 +12,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\gui\ChatDlg.cxx" />
+    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c" />
+    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg_cmd.c" />
+    <ClCompile Include="..\..\..\gui\ipmsg\lookup3.c" />
     <ClCompile Include="..\..\..\gui\main.cxx" />
     <ClCompile Include="..\..\..\gui\MainDlg.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\gui\ChatDlg.hxx" />
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.hxx" />
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.hxx" />
     <ClInclude Include="..\..\..\gui\MainDlg.hxx" />
+    <ClInclude Include="resource.hxx" />
     <ClInclude Include="resource.hxx" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="JMsg.rc" />
+    <Image Include="..\..\..\JMsg.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\JMsg.ico" />
+    <ResourceCompile Include="JMsg.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A0AF9547-3453-4103-951E-F320380990F8}</ProjectGuid>
@@ -69,11 +75,11 @@
       <SDLCheck>true</SDLCheck>
       <CompileAs>Default</CompileAs>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../../JUI/src/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../../JUI/src/;../../../src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>JUI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>JUI.lib;JMsgCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>

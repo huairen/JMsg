@@ -30,6 +30,11 @@ struct user_info {
 	struct net_address addr;
 };
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 struct user_info* user_add(uint32_t user_id);
 struct user_info* user_find(uint32_t user_id);
 struct user_info* user_find_by_index(uint32_t index);
@@ -46,5 +51,10 @@ void user_push_msg(uint32_t user_id, uint32_t id, uint32_t time, const char *tex
 uint32_t user_unrend_count(uint32_t user_id);
 struct user_message* user_unread_msg(uint32_t user_id);
 struct user_message* user_read_msg(uint32_t user_id, int index);
+
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif

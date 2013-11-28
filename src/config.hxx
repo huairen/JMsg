@@ -4,6 +4,11 @@
 #define LIMIT_BROADCAST 0x01	//受限广播，只向本地网段广播
 #define DIRECT_BROADCAST 0x02	//直接广播，指定广播寺址，进行广播
 
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 int cfg_load( const char* filename );
 
 int cfg_bind_port();
@@ -14,6 +19,9 @@ const char* cfg_group_name();
 
 void cfg_set_broadcast_mode(int mode);
 
+#ifdef __cplusplus
+};
+#endif
 
 #endif
                                                   
