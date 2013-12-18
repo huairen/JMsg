@@ -1,13 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\..\gui\MainDlg.cxx">
+    <ClCompile Include="..\..\..\gui\MainDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\main.cxx">
+    <ClCompile Include="..\..\..\gui\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\ChatDlg.cxx">
+    <ClCompile Include="..\..\..\gui\ChatDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c">
@@ -21,22 +21,22 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\gui\ChatDlg.hxx">
+    <ClInclude Include="..\..\..\gui\ChatDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.hxx">
+    <ClInclude Include="resource.h">
       <Filter>资源文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.hxx">
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.h">
       <Filter>头文件\ipmsg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.hxx">
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.h">
       <Filter>头文件\ipmsg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\gui\MainDlg.hxx">
+    <ClInclude Include="..\..\..\gui\MainDlg.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="resource.hxx">
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

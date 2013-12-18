@@ -24,16 +24,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\shell\console.hxx">
+    <ClInclude Include="..\..\..\shell\console.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\shell\ipmsg.hxx">
+    <ClInclude Include="..\..\..\shell\ipmsg.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\shell\ipmsg_cmd.hxx">
+    <ClInclude Include="..\..\..\shell\ipmsg_cmd.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\shell\shell.hxx">
+    <ClInclude Include="..\..\..\shell\shell.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

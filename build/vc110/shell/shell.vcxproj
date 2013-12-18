@@ -20,10 +20,10 @@
     <ClCompile Include="..\..\..\shell\win_console.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\shell\console.hxx" />
-    <ClInclude Include="..\..\..\shell\ipmsg.hxx" />
-    <ClInclude Include="..\..\..\shell\ipmsg_cmd.hxx" />
-    <ClInclude Include="..\..\..\shell\shell.hxx" />
+    <ClInclude Include="..\..\..\shell\console.h" />
+    <ClInclude Include="..\..\..\shell\ipmsg.h" />
+    <ClInclude Include="..\..\..\shell\ipmsg_cmd.h" />
+    <ClInclude Include="..\..\..\shell\shell.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{381FDE7C-313A-4104-87E8-795A1AE3971F}</ProjectGuid>

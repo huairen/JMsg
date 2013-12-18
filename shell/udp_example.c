@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include "network.hxx"
+#include "network.h"
 
 void udp_client()
 {

@@ -1,4 +1,4 @@
-#include "network.hxx"
+#include "network.h"
 #include <stdio.h>
 #include <memory.h>
 #include <string.h>

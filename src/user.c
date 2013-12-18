@@ -1,5 +1,5 @@
-#include "user.hxx"
-#include "config.hxx"
+#include "user.h"
+#include "config.h"
 
 struct user_message_list {
 	struct user_message_list *next;

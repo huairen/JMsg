@@ -1,7 +1,7 @@
-#include "config.hxx"
-#include "types.hxx"
-#include "jmsg.hxx"
-#include "user.hxx"
+#include "config.h"
+#include "types.h"
+#include "jmsg.h"
+#include "user.h"
 
 static int bind_port = 2425;
 static int broadcast_mode = DIRECT_BROADCAST;

@@ -11,20 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\gui\ChatDlg.cxx" />
+    <ClCompile Include="..\..\..\gui\ChatDlg.cpp" />
     <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c" />
     <ClCompile Include="..\..\..\gui\ipmsg\ipmsg_cmd.c" />
     <ClCompile Include="..\..\..\gui\ipmsg\lookup3.c" />
-    <ClCompile Include="..\..\..\gui\main.cxx" />
-    <ClCompile Include="..\..\..\gui\MainDlg.cxx" />
+    <ClCompile Include="..\..\..\gui\main.cpp" />
+    <ClCompile Include="..\..\..\gui\MainDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\gui\ChatDlg.hxx" />
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.hxx" />
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.hxx" />
-    <ClInclude Include="..\..\..\gui\MainDlg.hxx" />
-    <ClInclude Include="resource.hxx" />
-    <ClInclude Include="resource.hxx" />
+    <ClInclude Include="..\..\..\gui\ChatDlg.h" />
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.h" />
+    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.h" />
+    <ClInclude Include="..\..\..\gui\MainDlg.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\JMsg.ico" />
