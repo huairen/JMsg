@@ -6,6 +6,7 @@
 *.ncb
 *.opensdf
 *.aps
+ipch
 Debug
 Release
 .DS_Store

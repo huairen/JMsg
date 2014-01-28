@@ -1,11 +1,11 @@
-frame(main)
+root(main)
 	size = 280,600
 	minSize = 200,300
 	maxSize = 500,0
 	image = All_window_windowBkg.bmp
 #	image = menu_bk.png
 
-	new button(close)
+	new JuiButton(close)
 		position = 241,0
 		size = 39,19
 		horizAlign = right
@@ -14,7 +14,7 @@ frame(main)
 		pressImage = btn_close_down.png
 	end
 	
-	new button(max)
+	new JuiButton(max)
 		position = 213,0
 		size = 28,19
 		horizAlign = right
@@ -24,7 +24,7 @@ frame(main)
 		pressImage = btn_max_down.png
 	end
 	
-	new button(restore)
+	new JuiButton(restore)
 		position = 213,0
 		size = 28,19
 		visible = false
@@ -35,7 +35,7 @@ frame(main)
 		pressImage = btn_restore_down.png
 	end
 	
-	new button(min)
+	new JuiButton(min)
 		position = 185,0
 		size = 28,19
 		horizAlign = right

@@ -10,10 +10,16 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "shell", "shell\shell.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JMsg", "JMsg\JMsg.vcxproj", "{A0AF9547-3453-4103-951E-F320380990F8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E} = {F8B57C55-65C9-4215-8296-09EFEB83EA9E}
 		{76DF20BA-64E8-4F3C-B637-7639CB34A798} = {76DF20BA-64E8-4F3C-B637-7639CB34A798}
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JUI", "..\..\..\JUI\build\JUI.vcxproj", "{76DF20BA-64E8-4F3C-B637-7639CB34A798}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E} = {F8B57C55-65C9-4215-8296-09EFEB83EA9E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JCore", "..\..\..\JCore\build\JCore.vcxproj", "{F8B57C55-65C9-4215-8296-09EFEB83EA9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +43,10 @@ Global
 		{76DF20BA-64E8-4F3C-B637-7639CB34A798}.Debug|Win32.Build.0 = Debug|Win32
 		{76DF20BA-64E8-4F3C-B637-7639CB34A798}.Release|Win32.ActiveCfg = Release|Win32
 		{76DF20BA-64E8-4F3C-B637-7639CB34A798}.Release|Win32.Build.0 = Release|Win32
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E}.Debug|Win32.Build.0 = Debug|Win32
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E}.Release|Win32.ActiveCfg = Release|Win32
+		{F8B57C55-65C9-4215-8296-09EFEB83EA9E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

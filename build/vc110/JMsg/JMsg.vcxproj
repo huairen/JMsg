@@ -32,6 +32,14 @@
   <ItemGroup>
     <ResourceCompile Include="JMsg.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\JUI\build\JUI.vcxproj">
+      <Project>{76df20ba-64e8-4f3c-b637-7639cb34a798}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\JMsgCore\JMsgCore.vcxproj">
+      <Project>{8015517d-a0d5-42a9-b023-28df11904f8b}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A0AF9547-3453-4103-951E-F320380990F8}</ProjectGuid>
     <RootNamespace>JMsg</RootNamespace>
@@ -75,11 +83,11 @@
       <SDLCheck>true</SDLCheck>
       <CompileAs>Default</CompileAs>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../../JUI/src/;../../../src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\..\..\JCore\src;..\..\..\..\JUI\src;..\..\..\src</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>JUI.lib;JMsgCore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
