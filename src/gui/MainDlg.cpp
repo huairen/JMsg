@@ -1,6 +1,6 @@
 #include "ipmsg/ipmsg.h"
 #include "MainDlg.h"
-#include "../build/vc110/JMsg/resource.h"
+#include "resource.h"
 #include "graphics/gdi/JGdiRender.h"
 #include "base/JuiReader.h"
 #include "button/JuiButton.h"

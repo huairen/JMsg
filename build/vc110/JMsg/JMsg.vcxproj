@@ -11,20 +11,13 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\gui\ChatDlg.cpp" />
-    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c" />
-    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg_cmd.c" />
-    <ClCompile Include="..\..\..\gui\ipmsg\lookup3.c" />
-    <ClCompile Include="..\..\..\gui\main.cpp" />
-    <ClCompile Include="..\..\..\gui\MainDlg.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\gui\ChatDlg.h" />
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.h" />
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.h" />
-    <ClInclude Include="..\..\..\gui\MainDlg.h" />
-    <ClInclude Include="resource.h" />
-    <ClInclude Include="resource.h" />
+    <ClCompile Include="..\..\..\src\gui\ChatDlg.cpp" />
+    <ClCompile Include="..\..\..\src\gui\FriendList.cpp" />
+    <ClCompile Include="..\..\..\src\gui\ipmsg\ipmsg.c" />
+    <ClCompile Include="..\..\..\src\gui\ipmsg\ipmsg_cmd.c" />
+    <ClCompile Include="..\..\..\src\gui\ipmsg\lookup3.c" />
+    <ClCompile Include="..\..\..\src\gui\main.cpp" />
+    <ClCompile Include="..\..\..\src\gui\MainDlg.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\..\JMsg.ico" />
@@ -33,12 +26,19 @@
     <ResourceCompile Include="JMsg.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\JUI\build\JUI.vcxproj">
+    <ProjectReference Include="..\..\..\libs\JUI\build\JUI.vcxproj">
       <Project>{76df20ba-64e8-4f3c-b637-7639cb34a798}</Project>
     </ProjectReference>
     <ProjectReference Include="..\JMsgCore\JMsgCore.vcxproj">
       <Project>{8015517d-a0d5-42a9-b023-28df11904f8b}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\gui\ChatDlg.h" />
+    <ClInclude Include="..\..\..\src\gui\FriendList.h" />
+    <ClInclude Include="..\..\..\src\gui\ipmsg\ipmsg.h" />
+    <ClInclude Include="..\..\..\src\gui\ipmsg\ipmsg_cmd.h" />
+    <ClInclude Include="..\..\..\src\gui\MainDlg.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{A0AF9547-3453-4103-951E-F320380990F8}</ProjectGuid>
@@ -83,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <CompileAs>Default</CompileAs>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\..\..\JCore\src;..\..\..\..\JUI\src;..\..\..\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;..\..\..\..\JCore\src;..\..\..\..\JUI\src;..\..\..\src\core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

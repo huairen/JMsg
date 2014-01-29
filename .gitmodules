@@ -1,0 +1,3 @@
+[submodule "libs/JUI"]
+	path = libs/JUI
+	url = https://github.com/huairen/JUI.git

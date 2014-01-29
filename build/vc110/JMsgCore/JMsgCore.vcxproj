@@ -11,19 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\src\config.c" />
-    <ClCompile Include="..\..\..\src\jmsg.c" />
-    <ClCompile Include="..\..\..\src\miscfunc.c" />
-    <ClCompile Include="..\..\..\src\network.c" />
-    <ClCompile Include="..\..\..\src\user.c" />
+    <ClCompile Include="..\..\..\src\core\config.c" />
+    <ClCompile Include="..\..\..\src\core\jmsg.c" />
+    <ClCompile Include="..\..\..\src\core\miscfunc.c" />
+    <ClCompile Include="..\..\..\src\core\network.c" />
+    <ClCompile Include="..\..\..\src\core\user.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\config.h" />
-    <ClInclude Include="..\..\..\src\jmsg.h" />
-    <ClInclude Include="..\..\..\src\miscfunc.h" />
-    <ClInclude Include="..\..\..\src\network.h" />
-    <ClInclude Include="..\..\..\src\types.h" />
-    <ClInclude Include="..\..\..\src\user.h" />
+    <ClInclude Include="..\..\..\src\core\config.h" />
+    <ClInclude Include="..\..\..\src\core\jmsg.h" />
+    <ClInclude Include="..\..\..\src\core\miscfunc.h" />
+    <ClInclude Include="..\..\..\src\core\network.h" />
+    <ClInclude Include="..\..\..\src\core\types.h" />
+    <ClInclude Include="..\..\..\src\core\user.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8015517D-A0D5-42A9-B023-28DF11904F8B}</ProjectGuid>

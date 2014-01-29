@@ -1,4 +1,4 @@
-#include "FriendList.hxx"
+#include "FriendList.h"
 
 
 FriendList::FriendList()

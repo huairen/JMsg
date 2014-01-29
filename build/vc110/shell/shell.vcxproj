@@ -11,19 +11,20 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\shell\ipmsg.c" />
-    <ClCompile Include="..\..\..\shell\ipmsg_cmd.c" />
-    <ClCompile Include="..\..\..\shell\lookup3.c" />
-    <ClCompile Include="..\..\..\shell\main.c" />
-    <ClCompile Include="..\..\..\shell\shell.c" />
-    <ClCompile Include="..\..\..\shell\udp_example.c" />
-    <ClCompile Include="..\..\..\shell\win_console.c" />
+    <ClCompile Include="..\..\..\src\shell\ipmsg.c" />
+    <ClCompile Include="..\..\..\src\shell\ipmsg_cmd.c" />
+    <ClCompile Include="..\..\..\src\shell\lookup3.c" />
+    <ClCompile Include="..\..\..\src\shell\main.c" />
+    <ClCompile Include="..\..\..\src\shell\shell.c" />
+    <ClCompile Include="..\..\..\src\shell\shell_handler.c" />
+    <ClCompile Include="..\..\..\src\shell\udp_example.c" />
+    <ClCompile Include="..\..\..\src\shell\win_console.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\shell\console.h" />
-    <ClInclude Include="..\..\..\shell\ipmsg.h" />
-    <ClInclude Include="..\..\..\shell\ipmsg_cmd.h" />
-    <ClInclude Include="..\..\..\shell\shell.h" />
+    <ClInclude Include="..\..\..\src\shell\console.h" />
+    <ClInclude Include="..\..\..\src\shell\ipmsg.h" />
+    <ClInclude Include="..\..\..\src\shell\ipmsg_cmd.h" />
+    <ClInclude Include="..\..\..\src\shell\shell.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{381FDE7C-313A-4104-87E8-795A1AE3971F}</ProjectGuid>
@@ -69,7 +70,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>../../../src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../../src/core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

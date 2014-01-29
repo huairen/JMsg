@@ -1,49 +1,52 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\..\..\gui\MainDlg.cpp">
+    <ClCompile Include="..\..\..\src\gui\ChatDlg.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\main.cpp">
+    <ClCompile Include="..\..\..\src\gui\FriendList.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\ChatDlg.cpp">
+    <ClCompile Include="..\..\..\src\gui\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg.c">
+    <ClCompile Include="..\..\..\src\gui\MainDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\gui\ipmsg\lookup3.c">
       <Filter>源文件\ipmsg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\ipmsg\ipmsg_cmd.c">
+    <ClCompile Include="..\..\..\src\gui\ipmsg\ipmsg.c">
       <Filter>源文件\ipmsg</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\gui\ipmsg\lookup3.c">
+    <ClCompile Include="..\..\..\src\gui\ipmsg\ipmsg_cmd.c">
       <Filter>源文件\ipmsg</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\gui\ChatDlg.h">
+    <ClInclude Include="resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>资源文件</Filter>
+      <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg.h">
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\ChatDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\FriendList.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\MainDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\gui\ipmsg\ipmsg_cmd.h">
       <Filter>头文件\ipmsg</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\gui\ipmsg\ipmsg_cmd.h">
+    <ClInclude Include="..\..\..\src\gui\ipmsg\ipmsg.h">
       <Filter>头文件\ipmsg</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\gui\MainDlg.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="resource.h">
-      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
