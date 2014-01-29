@@ -75,7 +75,7 @@ bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 	g_GdiRender.SetWindowHandler(m_hWnd);
 
 	JuiReader reader;
-	reader.LoadScript(this, "resource/default/mainframe.dlg");
+	reader.LoadScript(this, "res/default/mainframe.dlg");
 
 	ipmsg_init();
 	_beginthread(&MainDlg::ThreadFunc, 0, this);

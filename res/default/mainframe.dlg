@@ -2,16 +2,16 @@ root(main)
 	size = 280,600
 	minSize = 200,300
 	maxSize = 500,0
-	image = All_window_windowBkg.bmp
-#	image = menu_bk.png
+	image = res/default/All_window_windowBkg.bmp
+#	image = res/default/menu_bk.png
 
 	new JuiButton(close)
 		position = 241,0
 		size = 39,19
 		horizAlign = right
-		normalImage = btn_close_normal.png
-		highlightImage = btn_close_highlight.png
-		pressImage = btn_close_down.png
+		normalImage = res/default/btn_close_normal.png
+		HoverImage = res/default/btn_close_highlight.png
+		pressImage = res/default/btn_close_down.png
 	end
 	
 	new JuiButton(max)
@@ -19,9 +19,9 @@ root(main)
 		size = 28,19
 		horizAlign = right
 		scaleMode = all
-		normalImage = btn_max_normal.png
-		highlightImage = btn_max_highlight.png
-		pressImage = btn_max_down.png
+		normalImage = res/default/btn_max_normal.png
+		hoverImage = res/default/btn_max_highlight.png
+		pressImage = res/default/btn_max_down.png
 	end
 	
 	new JuiButton(restore)
@@ -30,42 +30,18 @@ root(main)
 		visible = false
 		horizAlign = right
 		scaleMode = all
-		normalImage = btn_restore_normal.png
-		highlightImage = btn_restore_highlight.png
-		pressImage = btn_restore_down.png
+		normalImage = res/default/btn_restore_normal.png
+		hoverImage = res/default/btn_restore_highlight.png
+		pressImage = res/default/btn_restore_down.png
 	end
 	
 	new JuiButton(min)
 		position = 185,0
 		size = 28,19
 		horizAlign = right
-		normalImage = btn_mini_normal.png
-		highlightImage = btn_mini_highlight.png
-		pressImage = btn_mini_down.png
+		normalImage = res/default/btn_mini_normal.png
+		hoverImage = res/default/btn_mini_highlight.png
+		pressImage = res/default/btn_mini_down.png
 	end
 	
-	new tabbook
-		position = 1,31
-		size = 278,569
-		horizAlign = width
-		vertAlign = height
-		normalImage = tabbar_normal.png
-		highlightImage = tabbar_hover.png
-		pressImage = tabbar_pushed.png
-		
-		new tabpage(friends)
-		end
-		
-		new tabpage(groups)
-		end
-		
-		new tabpage(history)
-		end
-	end
-	
-	new scroll
-		position = 1,56
-		size = 278,544
-		image = ./scrollbar.png
-	end
 end
