@@ -26,7 +26,7 @@
     <ResourceCompile Include="JMsg.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\libs\JUI\build\JUI.vcxproj">
+    <ProjectReference Include="..\..\..\..\JUI\build\JUI.vcxproj">
       <Project>{76df20ba-64e8-4f3c-b637-7639cb34a798}</Project>
     </ProjectReference>
     <ProjectReference Include="..\JMsgCore\JMsgCore.vcxproj">
@@ -83,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <CompileAs>Default</CompileAs>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;..\..\..\libs\JUI\src;..\..\..\libs\JUI\libs\JCore\src;..\..\..\src\core</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\..\JUI\src;..\..\..\..\JCore\src;..\..\..\src\core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

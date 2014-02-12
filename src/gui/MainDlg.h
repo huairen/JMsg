@@ -1,9 +1,10 @@
 #ifndef MAINDLG_H_
 #define MAINDLG_H_
 
-#include "win32/JuiFrame.h"
+#include "base/win32/JuiFrame.h"
 
 struct user_info;
+class JuiListBox;
 
 class MainDlg : public JuiFrame
 {
@@ -21,6 +22,9 @@ protected:
 	bool HandleSysCommand(UINT uCmdType, POINTS pt);
 
 	void OnFriendOnline(user_info *user);
+
+private:
+	JuiListBox* m_FriendList;
 };
 
 #endif

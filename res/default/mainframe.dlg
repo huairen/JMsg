@@ -44,4 +44,9 @@ root(main)
 		pressImage = res/default/btn_mini_down.png
 	end
 	
+	new JuiListBox(friends)
+		position = 185,0
+		size = 28,19
+	end
+	
 end

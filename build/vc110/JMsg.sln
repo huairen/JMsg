@@ -15,9 +15,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JMsg", "JMsg\JMsg.vcxproj",
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libs", "libs", "{864DB234-BA07-427B-996B-2390DDCDC510}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JUI", "..\..\libs\JUI\build\JUI.vcxproj", "{76DF20BA-64E8-4F3C-B637-7639CB34A798}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JUI", "..\..\..\JUI\build\JUI.vcxproj", "{76DF20BA-64E8-4F3C-B637-7639CB34A798}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JCore", "..\..\libs\JUI\libs\JCore\build\JCore.vcxproj", "{F8B57C55-65C9-4215-8296-09EFEB83EA9E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "JCore", "..\..\..\JCore\build\JCore.vcxproj", "{F8B57C55-65C9-4215-8296-09EFEB83EA9E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -3,7 +3,8 @@
 #include "resource.h"
 #include "graphics/gdi/JGdiRender.h"
 #include "base/JuiReader.h"
-#include "button/JuiButton.h"
+#include "controls/JuiButton.h"
+#include "controls/JuiListBox.h"
 
 #include "user.h"
 
@@ -14,6 +15,7 @@ JGdiRender g_GdiRender;
 MainDlg::MainDlg()
 {
 	sm_pRender = &g_GdiRender;
+	m_FriendList = NULL;
 }
 
 MainDlg::~MainDlg()
@@ -77,6 +79,8 @@ bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 	JuiReader reader;
 	reader.LoadScript(this, "res/default/mainframe.dlg");
 
+	m_FriendList = dynamic_cast<JuiListBox*>(FindControl("friends"));
+
 	ipmsg_init();
 	_beginthread(&MainDlg::ThreadFunc, 0, this);
 
@@ -110,7 +114,6 @@ bool MainDlg::HandleSysCommand( UINT uCmdType, POINTS pt )
 
 void MainDlg::OnFriendOnline( user_info *user )
 {
-	JuiContainer *groupCtrl;
 	const char *groupName;
 
 	if(user->group_name[0])
@@ -118,16 +121,5 @@ void MainDlg::OnFriendOnline( user_info *user )
 	else
 		groupName = "noneGroup";
 
-	groupCtrl = dynamic_cast<JuiContainer*>(FindControl(groupName));
-	if(groupCtrl == NULL)
-	{
-		JuiContainer *page = dynamic_cast<JuiContainer*>(FindControl("friends"));
-		if(page != NULL)
-		{
-// 			JuiRollout *roll = new JuiRollout;
-// 			roll->SetBounds(page->GetPosition(), page->GetExtent());
-// 			page->AddControl(roll);
-
-		}
-	}
+	m_FriendList->PushDefaultItem();
 }
