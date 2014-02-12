@@ -77,9 +77,14 @@ bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 	g_GdiRender.SetWindowHandler(m_hWnd);
 
 	JuiReader reader;
-	reader.LoadScript(this, "res/default/mainframe.dlg");
+	reader.LoadScript(this, "res/default/mainframe.txt");
 
 	m_FriendList = dynamic_cast<JuiListBox*>(FindControl("friends"));
+	if(m_FriendList != NULL)
+	{
+		JuiControl* pItem = FindControl("friend_item");
+		m_FriendList->SetItemModel(pItem);
+	}
 
 	ipmsg_init();
 	_beginthread(&MainDlg::ThreadFunc, 0, this);
@@ -121,5 +126,8 @@ void MainDlg::OnFriendOnline( user_info *user )
 	else
 		groupName = "noneGroup";
 
-	m_FriendList->PushDefaultItem();
+	if(m_FriendList != NULL)
+	{
+		m_FriendList->PushDefaultItem();
+	}
 }

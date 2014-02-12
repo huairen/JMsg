@@ -44,9 +44,21 @@ root(main)
 		pressImage = res/default/btn_mini_down.png
 	end
 	
+	new JuiContainer(friend_item)
+		visible = false
+		
+		new JuiButton
+			position = 1,0
+			size = 20,20
+			normalImage = res/default/button_nor.bmp
+			hoverImage = res/default/button_over.bmp
+			pressImage = res/default/button_down.bmp
+		end
+	end
+	
 	new JuiListBox(friends)
-		position = 185,0
-		size = 28,19
+		position = 0,50
+		size = 280,300
 	end
 	
 end
