@@ -10,11 +10,11 @@
 
 #include <process.h>
 
-JGdiRender g_GdiRender;
+JGDIRender g_GDIRender;
 
 MainDlg::MainDlg()
 {
-	sm_pRender = &g_GdiRender;
+	sm_pRender = &g_GDIRender;
 	m_FriendList = NULL;
 }
 
@@ -74,7 +74,7 @@ void MainDlg::ThreadFunc( void *arg )
 bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 {
 	SetIcon(IDI_JMSG_ICO);
-	g_GdiRender.SetWindowHandler(m_hWnd);
+	g_GDIRender.SetWindowHandler(m_hWnd);
 
 	JuiReader reader;
 	reader.LoadScript(this, "res/default/mainframe.txt");

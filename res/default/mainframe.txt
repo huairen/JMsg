@@ -2,8 +2,8 @@ root(main)
 	size = 280,600
 	minSize = 200,300
 	maxSize = 500,0
-	image = res/default/All_window_windowBkg.bmp
-#	image = res/default/menu_bk.png
+	background = res/default/All_window_windowBkg.bmp
+#	background = res/default/menu_bk.png
 
 	new JuiButton(close)
 		position = 241,0
