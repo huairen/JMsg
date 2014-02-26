@@ -1,7 +1,7 @@
 #include "ipmsg/ipmsg.h"
 #include "MainDlg.h"
 #include "resource.h"
-#include "graphics/gdi/JGdiRender.h"
+#include "Graphics/JRenderSystem.h"
 #include "base/JuiReader.h"
 #include "controls/JuiButton.h"
 #include "controls/JuiListBox.h"
@@ -10,11 +10,9 @@
 
 #include <process.h>
 
-JGDIRender g_GDIRender;
 
 MainDlg::MainDlg()
 {
-	sm_pRender = &g_GDIRender;
 	m_FriendList = NULL;
 }
 
@@ -74,7 +72,8 @@ void MainDlg::ThreadFunc( void *arg )
 bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 {
 	SetIcon(IDI_JMSG_ICO);
-	g_GDIRender.SetWindowHandler(m_hWnd);
+
+	JRenderSystem::GetInstance().CreateRenderer("GDI", (uint32_t)m_hWnd);
 
 	JuiReader reader;
 	reader.LoadScript(this, "res/default/mainframe.txt");
