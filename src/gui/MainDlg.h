@@ -4,7 +4,7 @@
 #include "base/win32/JuiFrame.h"
 
 struct user_info;
-class JuiListBox;
+class JuiListView;
 
 class MainDlg : public JuiFrame
 {
@@ -24,7 +24,7 @@ protected:
 	void OnFriendOnline(user_info *user);
 
 private:
-	JuiListBox* m_FriendList;
+	JuiListView* m_FriendList;
 };
 
 #endif

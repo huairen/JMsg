@@ -2,9 +2,9 @@
 #include "MainDlg.h"
 #include "resource.h"
 #include "Graphics/JRenderSystem.h"
+#include "FileSystem/JFileSystem.h"
 #include "base/JuiReader.h"
 #include "controls/JuiButton.h"
-#include "controls/JuiListBox.h"
 
 #include "user.h"
 
@@ -23,7 +23,7 @@ MainDlg::~MainDlg()
 
 void MainDlg::OnControlEvent( JuiControl* sender, int message, int param )
 {
-	if(message == JuiControl::MSG_CLICK)
+	if(message == MSG_CLICK)
 	{
 		if(_stricmp(sender->GetName(), "close") == 0)
 			Close(0);
@@ -75,15 +75,14 @@ bool MainDlg::HandleCreate( LPCREATESTRUCT lpCS )
 
 	JRenderSystem::GetInstance().CreateRenderer("GDI", (uint32_t)m_hWnd);
 
-	JuiReader reader;
-	reader.LoadScript(this, "res/default/mainframe.txt");
+	JuiReader::LoadScript(this, "default/mainframe.txt");
 
-	m_FriendList = dynamic_cast<JuiListBox*>(FindControl("friends"));
-	if(m_FriendList != NULL)
-	{
-		JuiControl* pItem = FindControl("friend_item");
-		m_FriendList->SetItemModel(pItem);
-	}
+// 	m_FriendList = dynamic_cast<JuiListBox*>(FindControl("friends"));
+// 	if(m_FriendList != NULL)
+// 	{
+// 		JuiControl* pItem = FindControl("friend_item");
+// 		m_FriendList->SetItemModel(pItem);
+// 	}
 
 	ipmsg_init();
 	_beginthread(&MainDlg::ThreadFunc, 0, this);
@@ -125,8 +124,8 @@ void MainDlg::OnFriendOnline( user_info *user )
 	else
 		groupName = "noneGroup";
 
-	if(m_FriendList != NULL)
-	{
-		m_FriendList->PushDefaultItem();
-	}
+// 	if(m_FriendList != NULL)
+// 	{
+// 		m_FriendList->PushDefaultItem();
+// 	}
 }
