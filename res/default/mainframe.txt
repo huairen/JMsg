@@ -4,28 +4,37 @@ root(main)
 	maxSize = 500,0
 	background = All_window_windowBkg
 
-	new JuiButton(close)
-		position = 241,0
-		size = 39,19
-		background = {btn_close_normal,btn_close_highlight,btn_close_down}
-	end
-	
-	new JuiButton(max)
-		position = 213,0
-		size = 28,19
-		background = {btn_max_normal,btn_max_highlight,btn_max_down}
-	end
-	
-	new JuiButton(restore)
-		position = 213,0
-		size = 28,19
-		visible = false
-		background = {btn_restore_normal,btn_restore_highlight,btn_restore_down}
-	end
-	
-	new JuiButton(min)
-		position = 185,0
-		size = 28,19
-		background = {btn_mini_normal,btn_mini_highlight,btn_mini_down}
+	new JuiRelativeLayout
+		layout_width = fill_parent
+		layout_height = fill_parent
+
+		new JuiButton(close)
+			position = 241,0
+			layout_width = wrap_content
+			layout_height = wrap_content
+			background = {btn_close_normal,btn_close_highlight,btn_close_down}
+		end
+		
+		new JuiButton(max)
+			position = 213,0
+			layout_width = wrap_content
+			layout_height = wrap_content
+			background = {btn_max_normal,btn_max_highlight,btn_max_down}
+		end
+		
+		new JuiButton(restore)
+			position = 213,0
+			layout_width = wrap_content
+			layout_height = wrap_content
+			visible = false
+			background = {btn_restore_normal,btn_restore_highlight,btn_restore_down}
+		end
+		
+		new JuiButton(min)
+			position = 185,0
+			layout_width = wrap_content
+			layout_height = wrap_content
+			background = {btn_mini_normal,btn_mini_highlight,btn_mini_down}
+		end
 	end
 end
