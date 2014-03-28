@@ -83,7 +83,7 @@
       <SDLCheck>true</SDLCheck>
       <CompileAs>Default</CompileAs>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNING;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\;..\..\..\..\JUI\src;..\..\..\..\JCore\src;..\..\..\src\core</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\;..\..\..\..\JUI\src;..\..\..\..\JUI\src\base;..\..\..\..\JCore\src;..\..\..\src\core</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
